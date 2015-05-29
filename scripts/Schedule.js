@@ -3,8 +3,7 @@
 /*globals moment */
 
 var Schedule = (function () {
-            var shift,
-                staff = [],
+            var staff = [],
                 assignedShifts = [],
                 _calendar = [],
                 _createEmployee,
@@ -17,6 +16,7 @@ var Schedule = (function () {
                 _assignShifts,
                 _getShifts,
                 _getCoverage,
+                _getDayObject,
                 _chooseRandomEmployee,
                 _adjustCandidateAvailability,
                 _checkAvailability;
@@ -33,10 +33,8 @@ var Schedule = (function () {
 
             _createStaff = function _createStaff(empJSON) {
                 for (var i = 0; i < empJSON.length; i++) {
-                    _addEmployeeToStaff(_createEmployee(empJSON[i].name, empJSON[i].hours))
+                    _addEmployeeToStaff(_createEmployee(empJSON[i].name, empJSON[i].hours));
                 }
-
-                console.log(staff);
             };
 
             _addEmployeeToStaff = function _addEmployeeToStaff(employee) {
@@ -82,9 +80,10 @@ var Schedule = (function () {
                 var firstDate = moment(startDate),
                     lastDate = moment(endDate),
                     dateInRange = firstDate,
-                    calendarJSON = {},
+                    calendarJSON = [],
                     formattedDate,
                     currentMonth = '',
+                    monthObj = {},
                     dayObj,
                     dayDate;
 
@@ -99,104 +98,18 @@ var Schedule = (function () {
 
                     if (formattedDate[1] !== currentMonth) {
                         currentMonth = formattedDate[1];
-                        calendarJSON[currentMonth] = {"Days": []};
+                        monthObj = {
+                            MonthName: currentMonth,
+                            Days: []
+                        };
+                        calendarJSON.push(monthObj);
                     }
-                    calendarJSON[currentMonth].Days.push(dayObj);
+                    calendarJSON[calendarJSON.length - 1].Days.push(dayObj);
 
                     dateInRange.add(1, 'days');
                 }
 
-
-                /*
-                 Is the month the same as the month of the current month array object
-                 No: Start new Month
-                 Yes: Create a new day with date and Day of week params
-                 Add appropriate shifts based on Day of Week
-                 */
-
-                /*
-                 calendarJSON = {
-                 "May": {
-                 "MonthName": "STRING",
-                 "Days": [
-                 {
-                 "DayDate": "INTEGER",
-                 "DayName": "STRING",
-                 "LD_Day": {
-                 "required": "BOOLEAN",
-                 "assignee": ""
-                 },
-                 "LD_Night": {
-                 "required": "BOOLEAN",
-                 "assignee": ""
-                 },
-                 "Clinic1": {
-                 "required": "BOOLEAN",
-                 "assignee": ""
-                 },
-                 "Clinic2": {
-                 "required": "BOOLEAN",
-                 "assignee": ""
-                 },
-                 "Clinic3": {
-                 "required": "BOOLEAN",
-                 "assignee": ""
-                 }
-                 },
-                 {
-                 "DayDate": "INTEGER",
-                 "DayName": "STRING",
-                 "LD_Day": {
-                 "required": "BOOLEAN",
-                 "assignee": ""
-                 },
-                 "LD_Night": {
-                 "required": "BOOLEAN",
-                 "assignee": ""
-                 },
-                 "Clinic1": {
-                 "required": "BOOLEAN",
-                 "assignee": ""
-                 },
-                 "Clinic2": {
-                 "required": "BOOLEAN",
-                 "assignee": ""
-                 },
-                 "Clinic3": {
-                 "required": "BOOLEAN",
-                 "assignee": ""
-                 }
-                 },
-                 {
-                 "DayDate": "INTEGER",
-                 "DayName": "STRING",
-                 "LD_Day": {
-                 "required": "BOOLEAN",
-                 "assignee": ""
-                 },
-                 "LD_Night": {
-                 "required": "BOOLEAN",
-                 "assignee": ""
-                 },
-                 "Clinic1": {
-                 "required": "BOOLEAN",
-                 "assignee": ""
-                 },
-                 "Clinic2": {
-                 "required": "BOOLEAN",
-                 "assignee": ""
-                 },
-                 "Clinic3": {
-                 "required": "BOOLEAN",
-                 "assignee": ""
-                 }
-                 }
-                 ]
-                 }
-                 };
-                 */
-
-                console.log(JSON.stringify(calendarJSON));
+                return calendarJSON;
             };
 
             _getDayObject = function _getDayObject(dayName, dayDate) {
@@ -205,12 +118,14 @@ var Schedule = (function () {
                 switch (dayName) {
                     case 'Monday':
                     case 'Thursday':
-                        shiftRequirementArray = [true, true, true, true, true, true];
+                        shiftRequirementArray = [true, true, true, true, true, false];
                         break;
                     case 'Tuesday':
                     case 'Wednesday':
+                        shiftRequirementArray = [true, true, true, true, false, false];
+                        break;
                     case 'Friday':
-                        shiftRequirementArray = [true, true, true, true, true, false];
+                        shiftRequirementArray = [true, true, true, true, false, true];
                         break;
                     case 'Saturday':
                     case 'Sunday':
@@ -221,33 +136,47 @@ var Schedule = (function () {
                 }
 
                 return {
-                    "DayDate": dayDate,
-                    "DayName": dayName,
-                    "LD_Day": {
-                        "required": shiftRequirementArray[0],
-                        "assignee": ""
-                    },
-                    "LD_Night": {
-                        "required": shiftRequirementArray[1],
-                        "assignee": ""
-                    },
-                    "Clinic1": {
-                        "required": shiftRequirementArray[2],
-                        "assignee": ""
-                    },
-                    "Clinic2": {
-                        "required": shiftRequirementArray[3],
-                        "assignee": ""
-                    },
-                    "Clinic3": {
-                        "required": shiftRequirementArray[4],
-                        "assignee": ""
-                    },
-                    "Clinic3": {
-                        "required": shiftRequirementArray[5],
-                        "assignee": ""
-                    }
-                }
+                    DayDate: dayDate,
+                    DayName: dayName,
+                    Shifts: [
+                        {
+                            shiftName: 'L&D Day',
+                            required: shiftRequirementArray[0],
+                            assignee: '',
+                            hours: 12
+                        },
+                        {
+                            shiftName: 'L&D Night',
+                            required: shiftRequirementArray[1],
+                            assignee: '',
+                            hours: 12
+                        },
+                        {
+                            shiftName: 'Clinic 1',
+                            required: shiftRequirementArray[2],
+                            assignee: '',
+                            hours: 8
+                        },
+                        {
+                            shiftName: 'Clinic 2',
+                            required: shiftRequirementArray[3],
+                            assignee: '',
+                            hours: 8
+                        },
+                        {
+                            shiftName: 'High Risk',
+                            required: shiftRequirementArray[4],
+                            assignee: '',
+                            hours: 8
+                        },
+                        {
+                            shiftName: 'Friday Coverage',
+                            required: shiftRequirementArray[5],
+                            assignee: '',
+                            hours: 4
+                        }
+                    ]
+                };
             };
 
 
@@ -258,16 +187,16 @@ var Schedule = (function () {
                 switch (dayAndDate[0]) {
                     case 'Monday':
                     case 'Thursday':
-                        shiftsForDay.shifts = ["L&D_Day", "L&D_Night", "Clinic", "Hi_Risk"];
+                        shiftsForDay.shifts = ['L&D_Day', 'L&D_Night', 'Clinic', 'Hi_Risk'];
                         break;
                     case 'Tuesday':
                     case 'Wednesday':
                     case 'Friday':
-                        shiftsForDay.shifts = ["L&D_Day", "L&D_Night", "Clinic"];
+                        shiftsForDay.shifts = ['L&D_Day', 'L&D_Night', 'Clinic'];
                         break;
                     case 'Saturday':
                     case 'Sunday':
-                        shiftsForDay.shifts = ["L&D_Day", "L&D_Night"];
+                        shiftsForDay.shifts = ['L&D_Day', 'L&D_Night'];
                         break;
                     default:
                         break;
@@ -348,61 +277,61 @@ var Schedule = (function () {
 var employees = {
     employees: [
         {
-            name: "a",
+            name: 'a',
             hours: 40,
             available: true,
             assignments: []
         },
         {
-            name: "b",
+            name: 'b',
             hours: 40,
             available: true,
             ssignments: []
         },
         {
-            name: "c",
+            name: 'c',
             hours: 40,
             available: true,
             ssignments: []
         },
         {
-            name: "d",
+            name: 'd',
             hours: 40,
             available: true,
             ssignments: []
         },
         {
-            name: "e",
+            name: 'e',
             hours: 40,
             available: true,
             ssignments: []
         },
         {
-            name: "f",
+            name: 'f',
             hours: 20,
             available: true,
             ssignments: []
         },
         {
-            name: "g",
+            name: 'g',
             hours: 20,
             available: true,
             ssignments: []
         },
         {
-            name: "h",
+            name: 'h',
             hours: 20,
             available: true,
             ssignments: []
         },
         {
-            name: "i",
+            name: 'i',
             hours: 20,
             available: true,
             ssignments: []
         },
         {
-            name: "j",
+            name: 'j',
             hours: 20,
             available: true,
             assignments: []

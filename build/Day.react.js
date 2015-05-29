@@ -13,7 +13,15 @@ var Day = React.createClass({displayName: "Day",
     render: function () {
         return (
             React.createElement("div", {className: "day"}, 
-                React.createElement("h2", null, this.props.dayName)
+                React.createElement("h2", null, this.props.dayName), 
+                
+                    this.props.shifts.map(function (shiftSet) {
+                        return (
+                            React.createElement(Shift, {shiftName: shiftSet.shiftName})
+                        )
+                    })
+                
+
             )
         );
     }
