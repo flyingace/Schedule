@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AACE,iBAAa;EACX,MAAM,EAAE,aAAa",
+"sources": ["../SCSS/shift.scss"],
+"names": [],
+"file": "shift.css"
+}

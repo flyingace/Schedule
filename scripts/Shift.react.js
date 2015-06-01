@@ -5,9 +5,39 @@
 /** @jsx React.DOM */
 
 var Shift = React.createClass({
+
+    displayName: 'Shift',
+
+    propTypes: {
+        shiftAssignee: React.PropTypes.string,
+        shiftLength: React.PropTypes.number.isRequired,
+        shiftName: React.PropTypes.string.isRequired
+    },
+
+    getDefaultProps: function () {
+        return {
+            shiftAssignee: 'Unassigned',
+            shiftLength: 12,
+            shiftName: 'Shift'
+        }
+    },
+
+    componentWillMount: function () {
+    },
+
+    componentDidMount: function () {
+      this.getClassesFromProps();
+    },
+
     render: function () {
         return (
-            <div className = "shift"><p>{this.props.shiftName}</p></div>
+            <div className = "shift"><p>{this.props.shiftName}: {this.props.shiftAssignee}</p></div>
         );
+    },
+
+    getClassesFromProps: function (props) {
+        if (this.props.shiftAssignee === 'Unassigned') {
+            React.findDOMNode(this).className = "shift unassigned";
+        }
     }
 });

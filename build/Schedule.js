@@ -58,10 +58,10 @@ var Schedule = (function () {
             _createShift = function _createShift(shiftName, shiftDate) {
                 var shift = {};
 
-                shift.name = shiftName;
+                shift.shiftName = shiftName;
                 shift.date = shiftDate;
-                shift.length = (shiftName.indexOf('L&D') < 0) ? 8 : 12;
-                shift.assignee = '';
+                shift.shiftLength = (shiftName.indexOf('L&D') < 0) ? 8 : 12;
+                shift.shiftAssignee = '';
 
                 return shift;
             };
@@ -142,38 +142,38 @@ var Schedule = (function () {
                         {
                             shiftName: 'L&D Day',
                             required: shiftRequirementArray[0],
-                            assignee: '',
-                            hours: 12
+                            shiftAssignee: '',
+                            shiftLength: 12
                         },
                         {
                             shiftName: 'L&D Night',
                             required: shiftRequirementArray[1],
-                            assignee: '',
-                            hours: 12
+                            shiftAssignee: '',
+                            shiftLength: 12
                         },
                         {
                             shiftName: 'Clinic 1',
                             required: shiftRequirementArray[2],
-                            assignee: '',
-                            hours: 8
+                            shiftAssignee: '',
+                            shiftLength: 8
                         },
                         {
                             shiftName: 'Clinic 2',
                             required: shiftRequirementArray[3],
-                            assignee: '',
-                            hours: 8
+                            shiftAssignee: '',
+                            shiftLength: 8
                         },
                         {
                             shiftName: 'High Risk',
                             required: shiftRequirementArray[4],
-                            assignee: '',
-                            hours: 8
+                            shiftAssignee: '',
+                            shiftLength: 8
                         },
                         {
                             shiftName: 'Friday Coverage',
                             required: shiftRequirementArray[5],
-                            assignee: '',
-                            hours: 4
+                            shiftAssignee: '',
+                            shiftLength: 4
                         }
                     ]
                 };
@@ -215,13 +215,13 @@ var Schedule = (function () {
             _assignShift = function _assignShift(shift) {
                 var candidate;
 
-                while (shift.assignee === '') {
+                while (shift.shiftAssignee === '') {
                     candidate = _chooseRandomEmployee();
                     var candidateIsAvailable = _checkAvailability(candidate, shift.length);
 
                     if (candidateIsAvailable) {
                         _adjustCandidateAvailability(candidate, shift.length);
-                        shift.assignee = candidate.name;
+                        shift.shiftAssignee = candidate.name;
                     }
                 }
             };

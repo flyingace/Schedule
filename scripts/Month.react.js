@@ -10,7 +10,9 @@ var Month = React.createClass({
 
     propTypes: {},
 
-    defaultProps: {},
+    getDefaultProps: function () {
+
+    },
 
     getInitialState: function () {
         return null;
@@ -27,9 +29,9 @@ var Month = React.createClass({
             <div className = "month">
                 <h1>{this.props.monthName}</h1>
                 {
-                    this.props.days.map(function (day) {
+                    this.props.days.map(function (day, index) {
                         return (
-                            <Day dayName = {day.DayName} shifts = {day.Shifts}/>
+                            <Day dayName = {day.DayName} dayDate = {day.DayDate} shifts = {day.Shifts} key = {index} />
                         )
                     })
                 }
