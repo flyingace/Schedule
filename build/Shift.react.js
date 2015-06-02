@@ -31,7 +31,7 @@ var Shift = React.createClass({
 
     render: function () {
         return (
-            React.createElement("div", {className: "shift"}, React.createElement("p", null, this.props.shiftName, ": ", this.props.shiftAssignee))
+            React.createElement("div", {className: "shift"}, this.props.shiftName, ": ", this.props.shiftAssignee)
         );
     },
 

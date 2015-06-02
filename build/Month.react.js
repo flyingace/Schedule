@@ -25,8 +25,10 @@ var Month = React.createClass({
     },
 
     render: function () {
+        var monthId = this.props.monthName.toLowerCase();
+
         return (
-            React.createElement("div", {className: "month"}, 
+            React.createElement("div", {className: "month", id: this.props.monthName.toLowerCase()}, 
                 React.createElement("h1", null, this.props.monthName), 
                 
                     this.props.days.map(function (day, index) {

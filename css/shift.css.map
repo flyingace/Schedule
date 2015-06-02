@@ -1,6 +1,6 @@
 {
 "version": 3,
-"mappings": "AACE,iBAAa;EACX,MAAM,EAAE,aAAa",
+"mappings": "AAAA,MAAO;EACL,MAAM,EAAE,IAAI;EACZ,SAAS,EAAE,IAAI;EACf,WAAW,EAAE,IAAI;EACjB,WAAW,EAAE,qBAAqB;EAClC,OAAO,EAAE,KAAK;EACd,aAAa,EAAE,GAAG;EAClB,aAAa,EAAE,GAAG;EAElB,iBAAa;IACX,gBAAgB,EAAE,GAAG",
 "sources": ["../SCSS/shift.scss"],
 "names": [],
 "file": "shift.css"

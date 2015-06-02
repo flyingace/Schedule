@@ -1,0 +1,16 @@
+.day {
+  width: 193px;
+  height: 193px;
+  border-style: solid;
+  border-color: black;
+  border-width: 0 1px 1px 0;
+  flex: 0 0 auto;
+  overflow: hidden;
+  padding: 3px; }
+  .day:nth-of-type(7n + 0) {
+    border-right: none; }
+  .day h2 {
+    text-align: right;
+    margin: 5px 0; }
+
+/*# sourceMappingURL=day.css.map */

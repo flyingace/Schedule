@@ -31,7 +31,7 @@ var Shift = React.createClass({
 
     render: function () {
         return (
-            <div className = "shift"><p>{this.props.shiftName}: {this.props.shiftAssignee}</p></div>
+            <div className = "shift">{this.props.shiftName}: {this.props.shiftAssignee}</div>
         );
     },
 
