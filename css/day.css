@@ -11,6 +11,18 @@
     text-align: right;
     margin: 5px 0; }
 
+.day#monday {
+  margin-left: 200px; }
+
+h1 {
+  font-size: 2em; }
+
+h2 {
+  font-size: 1.5em; }
+
+h3 {
+  font-size: 1.2em; }
+
 .month .monday:first-of-type {
   margin-left: 200px; }
 .month .tuesday:first-of-type {
