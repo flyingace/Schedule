@@ -7,12 +7,13 @@
 var Day = React.createClass({
     getDefaultProps: function () {
         return {dayName: "Saturday"};
-
     },
 
     render: function () {
+        var dayClass = "day " + this.props.dayName.toLowerCase();
+
         return (
-            <div className = "day">
+            <div className = {dayClass}>
                 <h2>{this.props.dayName} {this.props.dayDate}</h2>
                 {
                     this.props.shifts.map(function (shiftSet, index) {
