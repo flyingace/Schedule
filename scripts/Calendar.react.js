@@ -54,13 +54,13 @@ var Calendar = React.createClass({
 
     _fetchRemoteData: function () {
         var calendarJSON = Schedule.determineCalendar('05-01-2015', '07-31-2015');
-        setTimeout(function () {
+        //setTimeout(function () {
             this.setState({
                 calendarData: calendarJSON
             });
             console.log(this.state);
 
-        }.bind(this), 2000);
+        //}.bind(this), 2000);
     }
 });
 

@@ -7,10 +7,21 @@
   flex: 0 0 auto;
   overflow: hidden;
   padding: 3px; }
-  .day:nth-of-type(7n + 0) {
-    border-right: none; }
   .day h2 {
     text-align: right;
     margin: 5px 0; }
+
+.month .monday:first-of-type {
+  margin-left: 200px; }
+.month .tuesday:first-of-type {
+  margin-left: 400px; }
+.month .wednesday:first-of-type {
+  margin-left: 600px; }
+.month .thursday:first-of-type {
+  margin-left: 800px; }
+.month .friday:first-of-type {
+  margin-left: 1000px; }
+.month .saturday:first-of-type {
+  margin-left: 1200px; }
 
 /*# sourceMappingURL=day.css.map */
