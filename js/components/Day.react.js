@@ -2,7 +2,8 @@
 
 /*globals */
 
-/** @jsx React.DOM */
+var React = require('react');
+var Shift = require('./Shift.react');
 
 var Day = React.createClass({
     getDefaultProps: function () {
@@ -28,3 +29,5 @@ var Day = React.createClass({
         );
     }
 });
+
+module.exports = Day;

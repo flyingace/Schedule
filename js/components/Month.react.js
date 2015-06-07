@@ -2,7 +2,8 @@
 
 /*globals */
 
-/** @jsx React.DOM */
+var React = require('react');
+var Day = require('./Day.react');
 
 var Month = React.createClass({
 
@@ -41,3 +42,5 @@ var Month = React.createClass({
         );
     }
 });
+
+module.exports = Month;

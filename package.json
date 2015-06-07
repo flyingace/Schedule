@@ -5,21 +5,21 @@
   "main": "js/app.js",
   "dependencies": {
     "flux": "^2.0.0",
-    "react": "^0.12.0",
+    "react": "^0.13.3",
     "underscore": "^1.7.0"
   },
   "devDependencies": {
-    "browserify": "~6.2.0",
+    "browserify": "~10.2.4",
     "envify": "~3.0.0",
-    "react": "^0.12.0",
-    "reactify": "^0.15",
+    "react": "^0.13.3",
+    "reactify": "^1.0",
     "watchify": "~2.1.0"
   },
   "scripts": {
     "start": "watchify -o js/bundle.js -v -d .",
     "build": "browserify . | uglifyjs -cm > js/bundle.min.js"
   },
-  "author": "Ken Wheeler",
+  "author": "David Cameron",
   "browserify": {
     "transform": [
       "reactify",

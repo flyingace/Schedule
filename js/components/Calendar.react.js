@@ -1,8 +1,10 @@
 /* Created by davidcameron on 5/20/15. */
 
-/*globals React */
+/*globals */
 
-/** @jsx React.DOM */
+var React = require('react');
+var Schedule = require('../utils/Schedule');
+var Month = require('./Month.react');
 
 var Calendar = React.createClass({
 
@@ -55,13 +57,13 @@ var Calendar = React.createClass({
 
     _generateCalendarData: function () {
         return Schedule.determineCalendar('05-01-2015', '07-31-2015');
-
     },
 
-    _setStateWithCalendarData: function () {
+    _setStateWithCalendarData: function (calendarJSON) {
             this.setState({
                 calendarData: calendarJSON
             });
-            console.log(this.state);
     }
 });
+
+module.exports = Calendar;

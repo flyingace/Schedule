@@ -1,59 +1,65 @@
 /* Created by davidcameron on 5/9/15. */
 
-/*globals moment */
+/*globals */
 
-var Schedule = function () {
-    var staff = [],
-        assignedShifts = [],
-        _calendar = [],
-        _createEmployee,
-        _determineCalendar,
-        _addEmployeeToStaff,
-        _createShift,
-        _createShifts,
-        _createStaff,
-        _assignShift,
-        _assignShifts,
-        _getShifts,
-        _getCoverage,
-        _getDayObject,
-        _chooseRandomEmployee,
-        _adjustCandidateAvailability,
-        _checkAvailability;
+var moment = require('./moment');
 
-    _createEmployee = function _createEmployee(empName, contractHours) {
+module.exports =  {
+
+    staff: [],
+    assignedShifts: [],
+    calendar: [],
+    //var staff = [],
+    //    assignedShifts = [],
+    //    calendar = [],
+    //    createEmployee,
+    //    determineCalendar,
+    //    addEmployeeToStaff,
+    //    createShift,
+    //    createShifts,
+    //    createStaff,
+    //    assignShift,
+    //    assignShifts,
+    //    assignShifts,
+    //    getShifts,
+    //    getCoverage,
+    //    getDayObject,
+    //    chooseRandomEmployee,
+    //    adjustCandidateAvailability,
+    //    checkAvailability;
+
+    createEmployee: function createEmployee(empName, contractHours) {
         return {
             name: empName,
             contractHours: contractHours,
             unassignedHours: contractHours
         };
-    };
+    },
 
-    _createStaff = function _createStaff(empJSON) {
+    createStaff: function createStaff(empJSON) {
         for (var i = 0; i < empJSON.length; i++) {
-            _addEmployeeToStaff(_createEmployee(empJSON[i].name, empJSON[i].hours));
+            this.addEmployeeToStaff(this.createEmployee(empJSON[i].name, empJSON[i].hours));
         }
-    };
+    },
 
-    _addEmployeeToStaff = function _addEmployeeToStaff(employee) {
-        staff.push(employee);
+    addEmployeeToStaff: function addEmployeeToStaff(employee) {
+        this.staff.push(employee);
+    },
 
-    };
-
-    _createShifts = function _createShifts(dayInfo) {
+    createShifts: function createShifts(dayInfo) {
         var shiftNameArray = dayInfo.shifts,
             shiftDate = dayInfo.date,
             dayOfShifts = [];
 
         for (var i = 0; i < shiftNameArray.length; i++) {
-            var newShift = _createShift(shiftNameArray[i], shiftDate);
+            var newShift = this.createShift(shiftNameArray[i], shiftDate);
             dayOfShifts.push(newShift);
         }
 
         return dayOfShifts;
-    };
+    },
 
-    _createShift = function _createShift(shiftName, shiftDate) {
+    createShift: function createShift(shiftName, shiftDate) {
         var shift = {};
 
         shift.shiftName = shiftName;
@@ -62,7 +68,7 @@ var Schedule = function () {
         shift.shiftAssignee = '';
 
         return shift;
-    };
+    },
 
     /**
      * Create array of consecutive dates starting with startDate and
@@ -73,7 +79,7 @@ var Schedule = function () {
      * @returns {Array}
      * @private
      */
-    _determineCalendar = function _determineCalendar(startDate, endDate) {
+    determineCalendar: function determineCalendar(startDate, endDate) {
 
         var firstDate = moment(startDate),
             lastDate = moment(endDate),
@@ -87,12 +93,12 @@ var Schedule = function () {
 
         //check if the date comes after the lastDate, so lastDate is included in the array
         while (!dateInRange.isAfter(lastDate)) {
-            //_calendar.push(dateInRange.format('dddd, MMMM D YYYY'));
+            //calendar.push(dateInRange.format('dddd, MMMM D YYYY'));
             //dateInRange.add(1, 'days');
             formattedDate = dateInRange.format('dddd, MMMM, D, YYYY').split(', ');
 
             dayDate = parseInt(formattedDate[2], 10);
-            dayObj = _getDayObject(formattedDate[0], dayDate);
+            dayObj = this.getDayObject(formattedDate[0], dayDate);
 
             if (formattedDate[1] !== currentMonth) {
                 currentMonth = formattedDate[1];
@@ -108,9 +114,9 @@ var Schedule = function () {
         }
 
         return calendarJSON;
-    };
+    },
 
-    _getDayObject = function _getDayObject(dayName, dayDate) {
+    getDayObject: function getDayObject(dayName, dayDate) {
         var shiftRequirementArray = [];
 
         switch (dayName) {
@@ -175,162 +181,94 @@ var Schedule = function () {
                 }
             ]
         };
-    };
+    },
 
-
-    _getShifts = function _getShifts(day) {
+    getShifts: function getShifts(day) {
         var dayAndDate = day.split(', '),
             shiftsForDay = {date: dayAndDate[1]};
 
         switch (dayAndDate[0]) {
             case 'Monday':
             case 'Thursday':
-                shiftsForDay.shifts = ['L&D_Day', 'L&D_Night', 'Clinic', 'Hi_Risk'];
+                shiftsForDay.shifts = ['L&DDay', 'L&DNight', 'Clinic', 'HiRisk'];
                 break;
             case 'Tuesday':
             case 'Wednesday':
             case 'Friday':
-                shiftsForDay.shifts = ['L&D_Day', 'L&D_Night', 'Clinic'];
+                shiftsForDay.shifts = ['L&DDay', 'L&DNight', 'Clinic'];
                 break;
             case 'Saturday':
             case 'Sunday':
-                shiftsForDay.shifts = ['L&D_Day', 'L&D_Night'];
+                shiftsForDay.shifts = ['L&DDay', 'L&DNight'];
                 break;
             default:
                 break;
         }
 
         return shiftsForDay;
-    };
+    },
 
-    _assignShifts = function _assignShifts(shiftsForDay) {
-
-        for (var i = 0; i < shiftsForDay.length; i++) {
-            _assignShift(shiftsForDay[i]);
-        }
-    };
-
-    _assignShift = function _assignShift(shift) {
+    assignShift: function assignShift(shift) {
         var candidate;
 
         while (shift.shiftAssignee === '') {
-            candidate = _chooseRandomEmployee();
-            var candidateIsAvailable = _checkAvailability(candidate, shift.length);
+            candidate = this.chooseRandomEmployee();
+            var candidateIsAvailable = this.checkAvailability(candidate, shift.length);
 
             if (candidateIsAvailable) {
-                _adjustCandidateAvailability(candidate, shift.length);
+                this.adjustCandidateAvailability(candidate, shift.length);
                 shift.shiftAssignee = candidate.name;
             }
         }
-    };
+    },
 
-//TODO: Maybe add something to this that checks whether the selected employee has
-//a ratio of unassignedHours/contractHours that is above or below the average ratio
-//of all other employees
-    _chooseRandomEmployee = function _chooseRandomEmployee() {
-        var empIndex = Math.floor(Math.random() * staff.length);
+    assignShifts: function assignShifts(shiftsForDay) {
 
-        return staff[empIndex];
-    };
+        for (var i = 0; i < shiftsForDay.length; i++) {
+            this.assignShift(shiftsForDay[i]);
+        }
+    },
 
-    _checkAvailability = function _checkAvailability(candidate, shiftLength) {
+    //TODO: Maybe add something to this that checks whether the selected employee has
+    //a ratio of unassignedHours/contractHours that is above or below the average ratio
+    //of all other employees
+    chooseRandomEmployee: function chooseRandomEmployee() {
+        var empIndex = Math.floor(Math.random() * this.staff.length);
+
+        return this.staff[empIndex];
+    },
+
+    checkAvailability: function checkAvailability(candidate, shiftLength) {
         return (candidate.unassignedHours >= shiftLength);
-    };
+    },
 
-    _adjustCandidateAvailability = function _adjustCandidateAvailability(candidate, shiftLength) {
+    adjustCandidateAvailability: function adjustCandidateAvailability(candidate, shiftLength) {
         candidate.unassignedHours -= shiftLength;
-    };
+    },
 
-    _getCoverage = function _getCoverage() {
-        var calendar = _calendar,
+    getCoverage: function getCoverage() {
+        var calendar = this.calendar,
             dayInformation,
             dayOfShifts = [];
 
         for (var i = 0; i < calendar.length; i++) {
-            dayInformation = _getShifts(calendar[i]);
-            dayOfShifts = _createShifts(dayInformation);
-            _assignShifts(dayOfShifts);
-            assignedShifts.push(dayOfShifts);
+            dayInformation = this.getShifts(calendar[i]);
+            dayOfShifts = this.createShifts(dayInformation);
+            this.assignShifts(dayOfShifts);
+            this.assignedShifts.push(dayOfShifts);
         }
 
-        console.log(JSON.stringify(assignedShifts));
+        console.log(JSON.stringify(this.assignedShifts));
+    }
 
-    };
-
-    return {
-        //createEmployee: _createEmployee,
-        //addEmployeeToStaff: _addEmployeeToStaff,
-        //createShift: _createShift,
-        //addShiftToSchedule: _addShiftToSchedule,
-        createStaff: _createStaff,
-        determineCalendar: _determineCalendar,
-        getCoverage: _getCoverage
-    };
+    //return {
+    //    //createEmployee: createEmployee,
+    //    //addEmployeeToStaff: addEmployeeToStaff,
+    //    //createShift: createShift,
+    //    //addShiftToSchedule: addShiftToSchedule,
+    //    createStaff: createStaff,
+    //    determineCalendar: determineCalendar,
+    //    getCoverage: getCoverage
+    //};
 
 };
-
-var employees = {
-    employees: [
-        {
-            name: 'a',
-            hours: 40,
-            available: true,
-            assignments: []
-        },
-        {
-            name: 'b',
-            hours: 40,
-            available: true,
-            ssignments: []
-        },
-        {
-            name: 'c',
-            hours: 40,
-            available: true,
-            ssignments: []
-        },
-        {
-            name: 'd',
-            hours: 40,
-            available: true,
-            ssignments: []
-        },
-        {
-            name: 'e',
-            hours: 40,
-            available: true,
-            ssignments: []
-        },
-        {
-            name: 'f',
-            hours: 20,
-            available: true,
-            ssignments: []
-        },
-        {
-            name: 'g',
-            hours: 20,
-            available: true,
-            ssignments: []
-        },
-        {
-            name: 'h',
-            hours: 20,
-            available: true,
-            ssignments: []
-        },
-        {
-            name: 'i',
-            hours: 20,
-            available: true,
-            ssignments: []
-        },
-        {
-            name: 'j',
-            hours: 20,
-            available: true,
-            assignments: []
-        }
-    ]
-};
-

@@ -2,7 +2,7 @@
 
 /*globals */
 
-/** @jsx React.DOM */
+var React = require('react');
 
 var Shift = React.createClass({
 
@@ -41,3 +41,5 @@ var Shift = React.createClass({
         }
     }
 });
+
+module.exports = Shift;

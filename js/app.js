@@ -3,19 +3,18 @@
 /*globals */
 
 window.React = require('react');
-window.moment = require('./utils/moment');
-var CalendarData = require('./CalendarData'),
-    Schedule = require('./utils/Schedule'),
-    CalendarApp = require('./components/Calendar.react');
+//window.moment = require('./utils/moment');
+var Schedule = require('./utils/Schedule');
+    Calendar = require('./components/Calendar.react');
 
 // Load Mock Product Data into localStorage
-CalendarData.init();
+//CalendarData.init();
 
 // Load Mock API Call
 //CartAPI.getProductData();
 
 // Render FluxCartApp Controller View
 React.render(
-    <CalendarApp />,
+    <Calendar />,
     document.getElementById('calendar_wrapper')
 );
