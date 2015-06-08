@@ -9,24 +9,6 @@ module.exports =  {
     staff: [],
     assignedShifts: [],
     calendar: [],
-    //var staff = [],
-    //    assignedShifts = [],
-    //    calendar = [],
-    //    createEmployee,
-    //    determineCalendar,
-    //    addEmployeeToStaff,
-    //    createShift,
-    //    createShifts,
-    //    createStaff,
-    //    assignShift,
-    //    assignShifts,
-    //    assignShifts,
-    //    getShifts,
-    //    getCoverage,
-    //    getDayObject,
-    //    chooseRandomEmployee,
-    //    adjustCandidateAvailability,
-    //    checkAvailability;
 
     createEmployee: function createEmployee(empName, contractHours) {
         return {

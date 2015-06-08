@@ -4,8 +4,9 @@
 
 window.React = require('react');
 //window.moment = require('./utils/moment');
-var Schedule = require('./utils/Schedule');
-    Calendar = require('./components/Calendar.react');
+var Schedule = require('./utils/Schedule'),
+    Calendar = require('./components/Calendar.react'),
+    EmployeeList = require('./components/EmployeeList.react');
 
 // Load Mock Product Data into localStorage
 //CalendarData.init();
@@ -17,4 +18,9 @@ var Schedule = require('./utils/Schedule');
 React.render(
     <Calendar />,
     document.getElementById('calendar_wrapper')
+);
+
+React.render(
+    <EmployeeList />,
+    document.getElementById('employee-list')
 );

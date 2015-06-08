@@ -31,8 +31,12 @@ var Shift = React.createClass({
 
     render: function () {
         return (
-            <div className = "shift">{this.props.shiftName}: {this.props.shiftAssignee}</div>
+            <div className = "shift" onClick = {this.onShiftClick}>{this.props.shiftName}: {this.props.shiftAssignee}</div>
         );
+    },
+
+    onShiftClick: function (e) {
+        console.log(e.target);
     },
 
     getClassesFromProps: function (props) {

@@ -46,6 +46,8 @@
   padding: 0 4px;
   margin-bottom: 4px;
   border-radius: 3px; }
+  .shift:hover {
+    cursor: pointer; }
   .shift.unassigned {
     background-color: red; }
 

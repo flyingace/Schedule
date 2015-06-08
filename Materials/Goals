@@ -1,0 +1,35 @@
+Display a product with several options
+Change the price when selecting an option
+Add items to the cart
+Remove items from the cart
+Display the number of items in the cart
+Display the total price of the items in the cart
+Display the total price for each option in the cart based upon quantity
+Change our “Add To Cart” button caption to “Sold Out” and disable it when inventory is depleted for a given option
+Display the cart after adding a product or clicking the “View Cart” button
+
+
+
+Offer date-range selectors. (C, Sc)
+Generate a calendar from those selectors by selecting dates with them and CLICKING a "Generate Calendar" button. (C, Sc)
+Every day in the calendar should display the requisite shifts for that day. (C, D, S)
+Display the generated calendar. (C)
+
+Each shift should be color-coded based on what shift it is. (S)
+Each shift should display who is assigned to it (or "Unassigned" if no one has been assigned yet.) (S)
+
+Each shift should be CLICKABLE. (S)
+When CLICKED each shift should display a menu of all employees, showing their availability, hours
+assigned/unassigned & conflicts for that shift. (S, E)
+The menu should list "Unassigned" as one of the options. (S)
+Employee names should be CLICKABLE in the list (or Unclickable if not available/conflicted).
+When an employee is assigned or unassigned to a shift that should update the shift, displaying the employee's name.
+(S, E)
+When an employee is assigned or unassigned to a shift the employee's record should be updated, including hours
+assigned, hours available, and adjusting a list of shifts assigned to that employee. (E, S)
+
+The calendar's schedule should be clearable by month by CLICKING a "Clear Assignments" button. (C, Sc)
+Clearing assignements should update individual employee lists or assignments, hours assigned and availability. (C,
+Sc, E)
+The calendar's schedule should be able to generate itself automatically, assigning employees where appropriate
+following a given set of rules by CLICKING a "Assign Shifts" button.(C, Sc)
