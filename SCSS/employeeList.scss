@@ -1,0 +1,8 @@
+.employee-list {
+  display: none;
+
+  &.visible {
+    display: block;
+    position: absolute;
+  }
+}

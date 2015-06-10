@@ -2,29 +2,29 @@ module.exports = {
     employees: [
         {
             name: "S. Birdsall",
-            totalHours: 40,
-            availableHours: 40,
+            totalHours: 32,
+            availableHours: 32,
             assignments: [],
             commitment: 0.8
         },
         {
             name: "A. Brown",
-            totalHours: 40,
-            availableHours: 40,
+            totalHours: 20,
+            availableHours: 20,
             assignments: [],
             commitment: 0.5
         },
         {
             name: "G. Eich-piks",
-            totalHours: 40,
-            availableHours: 40,
+            totalHours: 24,
+            availableHours: 24,
             assignments: [],
             commitment: 0.6
         },
         {
             name: "K. Fitzgerald",
-            totalHours: 40,
-            availableHours: 40,
+            totalHours: 20,
+            availableHours: 20,
             assignments: [],
             commitment: 0.5
         },
@@ -65,8 +65,8 @@ module.exports = {
         },
         {
             name: "H. White",
-            totalHours: 40,
-            availableHours: 40,
+            totalHours: 20,
+            availableHours: 20,
             assignments: [],
             commitment: 0.5
         }

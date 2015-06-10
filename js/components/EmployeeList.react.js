@@ -13,14 +13,13 @@ var EmployeeMenu = React.createClass({
     propTypes: {},
 
     getDefaultProps: function () {
-        return {
-            visible: false
-        }
+        return null;
     },
 
     getInitialState: function () {
         console.log(EmployeeData.employees);
         return {
+            empListVisible: false,
             employeeData: EmployeeData.employees
         };
     },
@@ -33,7 +32,8 @@ var EmployeeMenu = React.createClass({
 
     render: function () {
         return (
-            <ul className = {'employee-list ' + (this.props.visible ? 'visible' : '')} >
+            <ul className = {'employee-list ' + (this.state.empListVisible ? 'visible' : '')} >
+                <li className = "employee close">Close</li>
                 {
                     this.state.employeeData.map(function (employee, index) {
                         return (
@@ -42,6 +42,7 @@ var EmployeeMenu = React.createClass({
                         )
                     })
                 }
+                <li className = "employee">Unassigned</li>
             </ul>
         );
     }

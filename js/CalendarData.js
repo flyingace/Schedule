@@ -1,7 +1,7 @@
 module.exports = {
     // Load Mock Product Data Into localStorage
     init: function () {
-        localStorage.clear();
+        localStorage.removeItem('schedule');
         localStorage.setItem('schedule', JSON.stringify([
             {
                 id: '0011001',

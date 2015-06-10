@@ -2,7 +2,7 @@
 
 /*globals */
 
-var AppDispatcher = require('../dispatcher/AppDispatcher');
+var CalendarDispatcher = require('../dispatcher/CalendarDispatcher');
 var EventEmitter = require('events').EventEmitter;
 var CalendarConstants = require('../constants/CalendarConstants');
 var _ = require('underscore');
@@ -64,18 +64,18 @@ var CalendarStore = _.extend({}, EventEmitter.prototype, {
 
 });
 
-// Register callback with AppDispatcher
-AppDispatcher.register(function(payload) {
+// Register callback with CalendarDispatcher
+CalendarDispatcher.register(function(payload) {
     var action = payload.action;
     var text;
 
     switch(action.actionType) {
 
-        case CalendarConstants.SHOW_EMPLOYEE_MENU:
+        case CalendarConstants.SHOW_EMPLOYEE_LIST:
             showEmployeeMenu();
             break;
 
-        case CalendarConstants.HIDE_EMPLOYEE_MENU:
+        case CalendarConstants.HIDE_EMPLOYEE_LIST:
             hideEmployeeMenu();
             break;
 

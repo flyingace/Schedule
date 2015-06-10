@@ -3,7 +3,6 @@
 /*globals */
 
 var React = require('react');
-var Schedule = require('../utils/Schedule');
 var Month = require('./Month.react');
 
 var Calendar = React.createClass({
@@ -25,8 +24,6 @@ var Calendar = React.createClass({
     },
 
     componentDidMount: function () {
-        var calendarJSON = this._generateCalendarData();
-        this._setStateWithCalendarData(calendarJSON);
     },
 
     componentWillUnmount: function () {

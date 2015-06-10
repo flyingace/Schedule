@@ -7,6 +7,7 @@ var CalendarStore = require('../stores/CalendarStore');
 var EmployeeStore = require('../stores/EmployeeStore');
 var Calendar = require('./Calendar.react');
 var EmployeeList = require('./EmployeeList.react');
+var Schedule = require('../utils/Schedule');
 
 // Method to retrieve state from Stores
 function getCalendarState() {
@@ -30,6 +31,8 @@ var CalendarApp = React.createClass({
 
     // Add change listeners to stores
     componentDidMount: function() {
+        //var calendarJSON = this._generateCalendarData();
+        //this._setStateWithCalendarData(calendarJSON);
         EmployeeStore.addChangeListener(this._onChange);
         CalendarStore.addChangeListener(this._onChange);
     },

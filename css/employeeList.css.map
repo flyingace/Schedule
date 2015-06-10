@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAAA,cAAe;EACb,OAAO,EAAE,IAAI;EAEb,sBAAU;IACR,OAAO,EAAE,KAAK;IACd,QAAQ,EAAE,QAAQ",
+"sources": ["../SCSS/employeeList.scss"],
+"names": [],
+"file": "employeeList.css"
+}

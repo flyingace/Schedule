@@ -1,0 +1,7 @@
+.employee-list {
+  display: none; }
+  .employee-list.visible {
+    display: block;
+    position: absolute; }
+
+/*# sourceMappingURL=employeeList.css.map */

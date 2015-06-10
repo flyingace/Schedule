@@ -8,7 +8,7 @@ var CalendarConstants = require('../constants/CalendarConstants');
 var _ = require('underscore');
 
 // Define initial data points
-var _employees = {}, _cartVisible = false;
+var _employees = {}, _empListVisible = false;
 
 // Add product to cart
 function add(sku, update) {
@@ -17,8 +17,8 @@ function add(sku, update) {
 }
 
 // Set cart visibility
-function setCartVisible(cartVisible) {
-    _cartVisible = cartVisible;
+function setEmpListVisible(empListVisible) {
+    _empListVisible = empListVisible;
 }
 
 // Remove item from cart
@@ -51,8 +51,8 @@ var EmployeeStore = _.extend({}, EventEmitter.prototype, {
     },
 
     // Return cart visibility state
-    getCartVisible: function() {
-        return _cartVisible;
+    getEmpListVisible: function() {
+        return _empListVisible;
     },
 
     // Emit Change event
@@ -84,9 +84,9 @@ CalendarDispatcher.register(function(payload) {
             add(action.sku, action.update);
             break;
 
-        // Respond to CART_VISIBLE action
-        case CalendarConstants.CART_VISIBLE:
-            setCartVisible(action.cartVisible);
+        // Respond to SHOW_EMPLOYEE_LIST action
+        case CalendarConstants.UPDATE_LIST_VISIBILITY:
+            setEmpListVisible(action.empListVisible);
             break;
 
         // Respond to CART_REMOVE action

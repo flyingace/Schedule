@@ -2,7 +2,8 @@
 
 /*globals */
 
-var React = require('react');
+var React = require('react'),
+    CalendarActions = require('../actions/ScheduleActions');
 
 var Shift = React.createClass({
 
@@ -37,6 +38,7 @@ var Shift = React.createClass({
 
     onShiftClick: function (e) {
         console.log(e.target);
+        CalendarActions.updateListVisibility(true);
     },
 
     getClassesFromProps: function (props) {
