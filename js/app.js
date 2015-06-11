@@ -5,16 +5,19 @@
 window.React = require('react');
 var CalendarData = require('./CalendarData'),
     EmployeeData = require('./EmployeeData'),
+    ScheduleAPI = require('./utils/ScheduleAPI'),
     ScheduleApp = require('./components/ScheduleApp.react');
 
 // Load Mock Calendar Data into localStorage
-//CalendarData.init();
+CalendarData.init();
+EmployeeData.init();
 
 // Load Mock API Call
-//CartAPI.getProductData();
+ScheduleAPI.getCalendarData();
+ScheduleAPI.getEmployeeData();
 
 // Render FluxCartApp Controller View
 React.render(
     <ScheduleApp />,
-    document.getElementById('scheduleApp')
+    document.getElementById('schedule-wrapper')
 );

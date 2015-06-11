@@ -2,44 +2,32 @@
 
 /*globals */
 
-var CalendarDispatcher = require('../dispatcher/CalendarDispatcher');
+var ScheduleDispatcher = require('../dispatcher/ScheduleDispatcher');
+var ScheduleConstants = require('../constants/ScheduleConstants');
 var EventEmitter = require('events').EventEmitter;
-var CalendarConstants = require('../constants/CalendarConstants');
 var _ = require('underscore');
 
 // Define initial data points
-var _product = {}, _selected = null;
+var _calendarData = {}, _selected = null;
 
-// Show Employee Menu
-function showEmployeeMenu(data) {
-    _product = data[0];
+function loadCalendarData(data) {
+    _calendarData = data;
+}
+
+function assignEmployeeToShift(data) {
     _selected = data[0].variants[0];
 }
 
-// Hide Employee Menu
-function hideEmployeeMenu(index) {
+function unassignEmployeeToShift(index) {
     _selected = _product.variants[index];
 }
-
-
-// Method to load product data from mock API
-function assignShift(data) {
-    _product = data[0];
-    _selected = data[0].variants[0];
-}
-
-// Method to set the currently selected product variation
-function unassignShift(index) {
-    _selected = _product.variants[index];
-}
-
 
 // Extend CalendarStore with EventEmitter to add eventing capabilities
 var CalendarStore = _.extend({}, EventEmitter.prototype, {
 
     // Return Product data
-    getProduct: function() {
-        return _product;
+    getCalendarData: function() {
+        return _calendarData;
     },
 
     // Return selected Product
@@ -64,29 +52,26 @@ var CalendarStore = _.extend({}, EventEmitter.prototype, {
 
 });
 
-// Register callback with CalendarDispatcher
-CalendarDispatcher.register(function(payload) {
-    var action = payload.action;
-    var text;
+// Register callback with ScheduleDispatcher
+ScheduleDispatcher.register(function(payload) {
+    var action = payload.action,
+        text;
 
-    switch(action.actionType) {
+    switch (action.actionType) {
 
-        case CalendarConstants.SHOW_EMPLOYEE_LIST:
-            showEmployeeMenu();
+        // Respond to RECEIVE_CALENDAR_DATA action
+        case ScheduleConstants.RECEIVE_CALENDAR_DATA:
+            loadCalendarData(action.data);
             break;
 
-        case CalendarConstants.HIDE_EMPLOYEE_LIST:
-            hideEmployeeMenu();
+        // Respond to SHIFT_ASSIGN action
+        case ScheduleConstants.SHIFT_ASSIGN:
+            assignEmployeeToShift(action.data);
             break;
 
-        // Respond to RECEIVE_DATA action
-        case CalendarConstants.SHIFT_ASSIGN:
-            assignShift(action.data);
-            break;
-
-        // Respond to SELECT_PRODUCT action
-        case CalendarConstants.SHIFT_UNASSIGN:
-            unassignShift(action.data);
+        // Respond to SHIFT_UNASSIGN action
+        case ScheduleConstants.SHIFT_UNASSIGN:
+            unassignEmployeeToShift(action.data);
             break;
 
         default:

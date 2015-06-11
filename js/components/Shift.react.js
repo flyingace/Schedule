@@ -3,7 +3,7 @@
 /*globals */
 
 var React = require('react'),
-    CalendarActions = require('../actions/ScheduleActions');
+    CalendarActions = require('../actions/CalendarActions');
 
 var Shift = React.createClass({
 

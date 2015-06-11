@@ -14,13 +14,11 @@ var Calendar = React.createClass({
     },
 
     getDefaultProps: function () {
-
+        return null;
     },
 
     getInitialState: function () {
-        return {
-            calendarData: {}
-        }
+        return null;
     },
 
     componentDidMount: function () {
@@ -31,7 +29,7 @@ var Calendar = React.createClass({
 
     render: function () {
 
-        if (!this.state.calendarData.length) {
+        if (!this.props.calendarData.length) {
             return (
                 <div className = "calendar">
                     No calendar yet!
@@ -42,7 +40,7 @@ var Calendar = React.createClass({
         return (
             <div className = "calendar">
                 {
-                    this.state.calendarData.map(function (month, index) {
+                    this.props.calendarData.map(function (month, index) {
                         return (
                             <Month monthName = {month.MonthName} days = {month.Days} key = {index}/>
                         )
@@ -50,16 +48,6 @@ var Calendar = React.createClass({
                 }
             </div>
         );
-    },
-
-    _generateCalendarData: function () {
-        return Schedule.determineCalendar('05-01-2015', '07-31-2015');
-    },
-
-    _setStateWithCalendarData: function (calendarJSON) {
-            this.setState({
-                calendarData: calendarJSON
-            });
     }
 });
 
