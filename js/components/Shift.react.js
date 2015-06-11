@@ -3,7 +3,7 @@
 /*globals */
 
 var React = require('react'),
-    CalendarActions = require('../actions/CalendarActions');
+    EmployeeActions = require('../actions/EmployeeActions');
 
 var Shift = React.createClass({
 
@@ -38,7 +38,7 @@ var Shift = React.createClass({
 
     onShiftClick: function (e) {
         console.log(e.target);
-        CalendarActions.updateListVisibility(true);
+        EmployeeActions.updateListVisibility(true);
     },
 
     getClassesFromProps: function (props) {

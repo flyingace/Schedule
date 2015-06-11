@@ -45,7 +45,7 @@ var ScheduleApp = React.createClass({
         return (
             <div className = "schedule-app">
                 <Calendar calendarData = {this.state.calendarData}/>
-                <EmployeeList employeeData = {this.state.employeeData}/>
+                <EmployeeList employeeData = {this.state.employeeData} empListVisible = {this.state.employeeListVisible}/>
             </div>
         );
     },
