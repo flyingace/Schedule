@@ -1,10 +1,10 @@
 .month {
   width: 1400px;
-  border: 1px solid black;
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  margin: 0 auto 10px auto; }
+  margin: 0 auto 10px auto;
+  background-color: aliceblue; }
   .month:after {
     content: '';
     clear: both; }
@@ -15,12 +15,13 @@
 .day {
   width: 193px;
   height: 193px;
-  border-style: solid;
-  border-color: black;
-  border-width: 0 1px 1px 0;
+  background-color: #ffffff;
   flex: 0 0 auto;
   overflow: hidden;
-  padding: 3px; }
+  padding: 3px;
+  margin: 0; }
+  .day:nth-of-type(2n + 1) {
+    background-color: #dfdfdf; }
   .day h2 {
     text-align: right;
     margin: 5px 0; }
@@ -45,19 +46,34 @@
   font-family: Helvetica, sans-serif;
   padding: 0 4px;
   margin-bottom: 4px;
-  border-radius: 3px; }
+  border-radius: 3px;
+  background-color: white; }
   .shift:hover {
     cursor: pointer; }
   .shift.unassigned {
     background-color: red; }
+  .shift.selected {
+    background-color: lightblue; }
 
 .employee-list {
-  display: none; }
+  position: absolute;
+  z-index: 50;
+  display: none;
+  list-style-type: none;
+  padding: 2px;
+  margin: 0;
+  background-color: mediumturquoise;
+  font-family: Helvetica, sans-serif;
+  border-radius: 4px; }
   .employee-list.visible {
+    display: block; }
+  .employee-list .employee {
     display: block;
-    position: absolute; 
-    width: 200px;
-    /* height: 400px; */
-}
+    padding: 3px;
+    cursor: pointer; }
+    .employee-list .employee:nth-of-type(2n) {
+      background-color: lightgray; }
+    .employee-list .employee:hover {
+      background-color: lightblue; }
 
 /*# sourceMappingURL=app.css.map */

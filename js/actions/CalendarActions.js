@@ -16,20 +16,19 @@ var CalendarActions = {
         });
     },
 
-    // Assign Shift to Employee
-    assignShift: function (sku, update) {
+    //Set Clicked Shift as Selected Shift
+    setSelectedShift: function (shiftID) {
         ScheduleDispatcher.handleAction({
-            actionType: ScheduleConstants.SHIFT_ASSIGN,
-            sku: sku,
-            update: update
+            actionType: ScheduleConstants.UPDATE_SHIFT_SELECTION,
+            selectedShift: shiftID
         });
     },
 
-    // Unassign Shift from Employee
-    unassignShift: function (sku) {
+    // Assign Shift to Employee
+    assignEmployee: function (assignedEmployee) {
         ScheduleDispatcher.handleAction({
-            actionType: ScheduleConstants.SHIFT_UNASSIGN,
-            sku: sku
+            actionType: ScheduleConstants.UPDATE_EMPLOYEE_ASSIGNMENT,
+            assignee: assignedEmployee
         });
     },
 
@@ -38,13 +37,6 @@ var CalendarActions = {
         ScheduleDispatcher.handleAction({
             actionType: ScheduleConstants.UPDATE_LIST_VISIBILITY,
             empListVisible: empListVisible
-        });
-    },
-
-    // Show Employee List
-    hideEmployeeList: function () {
-        ScheduleDispatcher.handleAction({
-            actionType: ScheduleConstants.HIDE_EMPLOYEE_LIST
         });
     }
 };

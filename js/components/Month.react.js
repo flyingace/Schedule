@@ -26,15 +26,14 @@ var Month = React.createClass({
     },
 
     render: function () {
-        var monthId = this.props.monthName.toLowerCase();
 
         return (
-            <div className = 'month' id = {this.props.monthName.toLowerCase()}>
+            <div className = 'month' data-id = {this.props.monthID} >
                 <h1>{this.props.monthName}</h1>
                 {
                     this.props.days.map(function (day, index) {
                         return (
-                            <Day dayName = {day.DayName} dayDate = {day.DayDate} shifts = {day.Shifts} key = {index} />
+                            <Day dayName = {day.DayName} dayDate = {day.DayDate} key = {index} shifts = {day.Shifts}  />
                         )
                     })
                 }

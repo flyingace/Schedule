@@ -14,6 +14,7 @@ function getScheduleState() {
     return {
         calendarData: CalendarStore.getCalendarData(),
         employeeData: EmployeeStore.getEmployeeData(),
+        //selectedShift: CalendarStore.getSelectedShift(),
         employeeListVisible: EmployeeStore.getEmpListVisible()
     };
 }
@@ -54,7 +55,6 @@ var ScheduleApp = React.createClass({
     _onChange: function () {
         this.setState(getScheduleState());
     }
-
 });
 
 module.exports = ScheduleApp;

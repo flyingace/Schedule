@@ -2,10 +2,10 @@
 
 /*globals */
 
+var _ = require('lodash');
 var ScheduleDispatcher = require('../dispatcher/ScheduleDispatcher');
 var ScheduleConstants = require('../constants/ScheduleConstants');
 var EventEmitter = require('events').EventEmitter;
-var _ = require('underscore');
 
 // Define initial data points
 var _employeeData = {}, _empListVisible = false;

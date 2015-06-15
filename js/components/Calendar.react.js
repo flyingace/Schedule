@@ -10,11 +10,13 @@ var Calendar = React.createClass({
     displayName: 'Calendar',
 
     propTypes: {
-        calendarData: React.PropTypes.object
+        calendarData: React.PropTypes.array
     },
 
     getDefaultProps: function () {
-        return null;
+        return {
+            calendarData: []
+        }
     },
 
     getInitialState: function () {
@@ -42,7 +44,7 @@ var Calendar = React.createClass({
                 {
                     this.props.calendarData.map(function (month, index) {
                         return (
-                            <Month monthName = {month.MonthName} days = {month.Days} key = {index}/>
+                            <Month monthName = {month.MonthName} monthID = {month.monthID} key = {index} days = {month.Days} />
                         )
                     })
                 }

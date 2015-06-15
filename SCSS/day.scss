@@ -3,15 +3,14 @@
 .day {
   width: $day-width - 7;
   height: 193px;
-  border-style: solid;
-  border-color: black;
-  border-width: 0 1px 1px 0;
+  background-color: #ffffff;
   flex: 0 0 auto;
   overflow: hidden;
   padding: 3px;
+  margin: 0;
 
-  &:nth-of-type(7n + 0) {
-    //border-right: none;
+  &:nth-of-type(2n + 1) {
+    background-color: #dfdfdf;
   }
 
   h2 {

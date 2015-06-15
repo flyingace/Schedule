@@ -6,6 +6,7 @@
   padding: 0 4px;
   margin-bottom: 4px;
   border-radius: 3px;
+  background-color: white;
 
   &:hover {
     cursor: pointer;
@@ -14,5 +15,9 @@
 
   &.unassigned {
     background-color: red;
+  }
+
+  &.selected {
+    background-color: lightblue;
   }
 }

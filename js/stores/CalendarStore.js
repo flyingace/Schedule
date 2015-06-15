@@ -2,60 +2,110 @@
 
 /*globals */
 
+var $ = require('jquery');
+var _ = require('lodash');
 var ScheduleDispatcher = require('../dispatcher/ScheduleDispatcher');
 var ScheduleConstants = require('../constants/ScheduleConstants');
 var EventEmitter = require('events').EventEmitter;
-var _ = require('underscore');
 
 // Define initial data points
-var _calendarData = {}, _selected = null;
+var _calendarData = {}, _selectedShift, _employee = '';
 
 function loadCalendarData(data) {
     _calendarData = data;
 }
 
-function assignEmployeeToShift(data) {
-    _selected = data[0].variants[0];
+function setSelectedShift(shiftID) {
+    var _days, _shifts, i, j, k;
+
+    for (i = 0; i < _calendarData.length; i++) {
+        _days = _calendarData[i].Days;
+        for (j = 0; j < _days.length; j++) {
+            _shifts = _days[j].Shifts;
+            for (k = 0; k < _shifts.length; k++) {
+                if (_shifts[k].shiftID === shiftID) {
+                    _shifts[k].selected = true;
+                    console.log(_shifts[k]);
+                    return;
+                }
+            }
+        }
+    }
+
+    //var getObject = function (container, id, callback) {
+    //    _.each(container, function (item) {
+    //        if (item.name === id) callback(item);
+    //        if (item.tree) getObject(item.tree, id, callback);
+    //    });
+    //}
 }
 
-function unassignEmployeeToShift(index) {
-    _selected = _product.variants[index];
+function assignEmployeeToShift(employee) {
+    var _days, _shifts, i, j, k;
+
+    for (i = 0; i < _calendarData.length; i++) {
+        _days = _calendarData[i].Days;
+        for (j = 0; j < _days.length; j++) {
+            _shifts = _days[j].Shifts;
+            for (k = 0; k < _shifts.length; k++) {
+                if (_shifts[k].selected === true) {
+                    _shifts[k].selected = false;
+                    _shifts[k].shiftAssignee = employee;
+                    return;
+                }
+            }
+        }
+    }
+
+    var selectedShift = getSelectedShift();
+    _employee = employee;
+}
+
+//TODO: Not sure if this is nec. for our purposes since
+// employee assignment is only used for display at the moment
+// and the only way to change this display would be to set a shift's
+// assignment to "Unassigned."
+function unassignEmployeeToShift(employee) {
+    _employee = employee;
 }
 
 // Extend CalendarStore with EventEmitter to add eventing capabilities
 var CalendarStore = _.extend({}, EventEmitter.prototype, {
 
     // Return Product data
-    getCalendarData: function() {
+    getCalendarData: function () {
         return _calendarData;
     },
 
-    // Return selected Product
-    getSelected: function(){
-        return _selected;
+    // Return selected Shift
+    getSelectedShift: function () {
+        return _selectedShift;
+    },
+
+    getAssignedEmployee: function () {
+        return _employee;
     },
 
     // Emit Change event
-    emitChange: function() {
+    emitChange: function () {
         this.emit('change');
     },
 
     // Add change listener
-    addChangeListener: function(callback) {
+    addChangeListener: function (callback) {
         this.on('change', callback);
     },
 
     // Remove change listener
-    removeChangeListener: function(callback) {
+    removeChangeListener: function (callback) {
         this.removeListener('change', callback);
     }
 
 });
 
 // Register callback with ScheduleDispatcher
-ScheduleDispatcher.register(function(payload) {
-    var action = payload.action,
-        text;
+ScheduleDispatcher.register(function (payload) {
+    var action = payload.action;
 
     switch (action.actionType) {
 
@@ -64,9 +114,13 @@ ScheduleDispatcher.register(function(payload) {
             loadCalendarData(action.data);
             break;
 
+        case ScheduleConstants.UPDATE_SHIFT_SELECTION:
+            setSelectedShift(action.selectedShift);
+            break;
+
         // Respond to SHIFT_ASSIGN action
-        case ScheduleConstants.SHIFT_ASSIGN:
-            assignEmployeeToShift(action.data);
+        case ScheduleConstants.UPDATE_EMPLOYEE_ASSIGNMENT:
+            assignEmployeeToShift(action.assignee);
             break;
 
         // Respond to SHIFT_UNASSIGN action

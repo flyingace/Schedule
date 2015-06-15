@@ -2,7 +2,7 @@
 
 /*globals */
 
-var moment = require('./moment');
+var moment = require('moment');
 
 module.exports =  {
 
@@ -77,15 +77,16 @@ module.exports =  {
         while (!dateInRange.isAfter(lastDate)) {
             //calendar.push(dateInRange.format('dddd, MMMM D YYYY'));
             //dateInRange.add(1, 'days');
-            formattedDate = dateInRange.format('dddd, MMMM, D, YYYY').split(', ');
+            formattedDate = dateInRange.format('dddd, MMMM, DD, YYYY').split(', ');
 
             dayDate = parseInt(formattedDate[2], 10);
-            dayObj = this.getDayObject(formattedDate[0], dayDate);
+            dayObj = this.getDayObject(formattedDate, dayDate);
 
             if (formattedDate[1] !== currentMonth) {
                 currentMonth = formattedDate[1];
                 monthObj = {
                     MonthName: currentMonth,
+                    MonthID: formattedDate[1] + formattedDate[3],
                     Days: []
                 };
                 calendarJSON.push(monthObj);
@@ -98,8 +99,10 @@ module.exports =  {
         return calendarJSON;
     },
 
-    getDayObject: function getDayObject(dayName, dayDate) {
-        var shiftRequirementArray = [];
+    getDayObject: function getDayObject(formattedDate, dayDate) {
+        var dayName = formattedDate[0],
+            dayID = formattedDate[2] + formattedDate[1] + formattedDate[3],
+            shiftRequirementArray = [];
 
         switch (dayName) {
             case 'Monday':
@@ -124,42 +127,55 @@ module.exports =  {
         return {
             DayDate: dayDate,
             DayName: dayName,
+            DayID: dayID,
             Shifts: [
                 {
                     shiftName: 'L&D Day',
                     required: shiftRequirementArray[0],
-                    shiftAssignee: '',
-                    shiftLength: 12
+                    shiftAssignee: 'Unassigned',
+                    shiftLength: 12,
+                    shiftID: dayID + '_LD',
+                    selected: false
                 },
                 {
                     shiftName: 'L&D Night',
                     required: shiftRequirementArray[1],
-                    shiftAssignee: '',
-                    shiftLength: 12
+                    shiftAssignee: 'Unassigned',
+                    shiftLength: 12,
+                    shiftID: dayID + '_LN',
+                    selected: false
                 },
                 {
                     shiftName: 'Clinic 1',
                     required: shiftRequirementArray[2],
-                    shiftAssignee: '',
-                    shiftLength: 8
+                    shiftAssignee: 'Unassigned',
+                    shiftLength: 8,
+                    shiftID: dayID + '_C1',
+                    selected: false
                 },
                 {
                     shiftName: 'Clinic 2',
                     required: shiftRequirementArray[3],
-                    shiftAssignee: '',
-                    shiftLength: 8
+                    shiftAssignee: 'Unassigned',
+                    shiftLength: 8,
+                    shiftID: dayID + '_C2',
+                    selected: false
                 },
                 {
                     shiftName: 'High Risk',
                     required: shiftRequirementArray[4],
-                    shiftAssignee: '',
-                    shiftLength: 8
+                    shiftAssignee: 'Unassigned',
+                    shiftLength: 8,
+                    shiftID: dayID + '_HR',
+                    selected: false
                 },
                 {
                     shiftName: 'Friday Coverage',
                     required: shiftRequirementArray[5],
-                    shiftAssignee: '',
-                    shiftLength: 4
+                    shiftAssignee: 'Unassigned',
+                    shiftLength: 4,
+                    shiftID: dayID + '_FC',
+                    selected: false
                 }
             ]
         };

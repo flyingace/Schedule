@@ -3,6 +3,7 @@
 /*globals */
 
 var React = require('react'),
+    CalendarActions = require('../actions/CalendarActions');
     EmployeeActions = require('../actions/EmployeeActions');
 
 var Shift = React.createClass({
@@ -10,16 +11,18 @@ var Shift = React.createClass({
     displayName: 'Shift',
 
     propTypes: {
-        shiftAssignee: React.PropTypes.string,
+        shiftAssignee: React.PropTypes.string.isRequired,
         shiftLength: React.PropTypes.number.isRequired,
-        shiftName: React.PropTypes.string.isRequired
+        shiftName: React.PropTypes.string.isRequired,
+        selected: React.PropTypes.bool
     },
 
     getDefaultProps: function () {
         return {
             shiftAssignee: 'Unassigned',
-            shiftLength: 12,
-            shiftName: 'Shift'
+            shiftLength: 0,
+            shiftName: 'Shift',
+            selected: false
         }
     },
 
@@ -27,24 +30,33 @@ var Shift = React.createClass({
     },
 
     componentDidMount: function () {
-      this.getClassesFromProps();
     },
 
     render: function () {
         return (
-            <div className = "shift" onClick = {this.onShiftClick}>{this.props.shiftName}: {this.props.shiftAssignee}</div>
+            <div className = {this.setClassesFromProps()} data-id = {this.props.shiftID} onClick = {this.onShiftClick}>{this.props.shiftName}: {this.props.shiftAssignee}</div>
         );
     },
 
     onShiftClick: function (e) {
-        console.log(e.target);
+        //console.log(e.currentTarget);
+        //console.log(this.props.shiftID);
+        CalendarActions.setSelectedShift(this.props.shiftID);
         EmployeeActions.updateListVisibility(true);
     },
 
-    getClassesFromProps: function (props) {
+    setClassesFromProps: function () {
+        var className = "shift";
+
         if (this.props.shiftAssignee === 'Unassigned') {
-            React.findDOMNode(this).className = "shift unassigned";
+            className += ' unassigned';
         }
+
+        if (this.props.shiftSelected) {
+            className += ' selected';
+        }
+
+        return className;
     }
 });
 

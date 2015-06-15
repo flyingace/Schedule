@@ -1,8 +1,29 @@
 .employee-list {
+  position: absolute;
+  z-index: 50;
   display: none;
+  list-style-type: none;
+  padding: 2px;
+  margin: 0;
+  background-color: mediumturquoise;
+  font-family: Helvetica, sans-serif;
+  border-radius: 4px;
 
   &.visible {
     display: block;
-    position: absolute;
+  }
+
+  .employee {
+    display: block;
+    padding: 3px;
+    cursor: pointer;
+
+    &:nth-of-type(2n) {
+      background-color: lightgray;
+    }
+
+    &:hover {
+      background-color: lightblue;
+    }
   }
 }

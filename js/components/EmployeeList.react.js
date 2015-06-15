@@ -2,28 +2,39 @@
 
 /*globals */
 
-var React = require('react');
-var EmployeeData = require('../utils/Employees');
-var EmployeeListItem = require('./EmployeeListItem.react');
+var React = require('react'),
+    $ = require('jquery'),
+    EmployeeData = require('../utils/Employees'),
+    EmployeeActions = require('../actions/EmployeeActions'),
+    EmployeeListItem = require('./EmployeeListItem.react')
+    CalendarActions = require('../actions/CalendarActions');
+
 
 var EmployeeMenu = React.createClass({
 
     displayName: EmployeeMenu,
 
-    propTypes: {},
-
-    getDefaultProps: function () {
-        return null;
+    propTypes: {
+        empListVisible: React.PropTypes.bool,
+        employeeData: React.PropTypes.array
     },
 
-    getInitialState: function () {
+    getDefaultProps: function () {
         return {
             empListVisible: false,
-            employeeData: {}
+            employeeData: []
         };
     },
 
+    getInitialState: function () {
+        return null;
+    },
+
+    componentWillMount: function () {
+    },
+
     componentDidMount: function () {
+        $('.employee').on('click', this.onEmployeeSelected);
     },
 
     componentWillUnmount: function () {
@@ -32,7 +43,9 @@ var EmployeeMenu = React.createClass({
     render: function () {
         if (!this.props.employeeData.length)
         {
-            return (<div>Howdy!</div>);
+            return (
+                <div>Calendar data loading...</div>
+            );
         }
 
         return (
@@ -41,7 +54,7 @@ var EmployeeMenu = React.createClass({
                 {
                     this.props.employeeData.map(function (employee, index) {
                         return (
-                            <EmployeeListItem employeeName = {employee.name} totalHours = {employee.totalHours}
+                            <EmployeeListItem key = {index} employeeName = {employee.name} totalHours = {employee.totalHours}
                                               availableHours = {employee.availableHours}/>
                         )
                     })
@@ -49,6 +62,10 @@ var EmployeeMenu = React.createClass({
                 <li className = "employee">Unassigned</li>
             </ul>
         );
+    },
+
+    onEmployeeSelected: function (e) {
+        EmployeeActions.updateListVisibility(false);
     }
 });
 
