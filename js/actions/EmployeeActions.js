@@ -16,6 +16,16 @@ var EmployeeActions = {
         });
     },
 
+
+    // Assign Shift to Employee
+    setAssignedEmployee: function (employeeName, employeeID) {
+        ScheduleDispatcher.handleAction({
+            actionType: ScheduleConstants.UPDATE_EMPLOYEE_SELECTION,
+            employeeName: employeeName,
+            employeeID: employeeID
+        });
+    },
+
     // Assign Shift to Employee
     assignShift: function (sku, update) {
         ScheduleDispatcher.handleAction({
@@ -34,17 +44,10 @@ var EmployeeActions = {
     },
 
     // Show Employee List
-    updateListVisibility: function (empListVisible) {
+    updateListVisibility: function (empListIsVisible) {
         ScheduleDispatcher.handleAction({
             actionType: ScheduleConstants.UPDATE_LIST_VISIBILITY,
-            empListVisible: empListVisible
-        });
-    },
-
-    // Show Employee List
-    hideEmployeeList: function () {
-        ScheduleDispatcher.handleAction({
-            actionType: ScheduleConstants.HIDE_EMPLOYEE_LIST
+            empListIsVisible: empListIsVisible
         });
     }
 };

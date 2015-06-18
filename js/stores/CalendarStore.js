@@ -31,13 +31,6 @@ function setSelectedShift(shiftID) {
             }
         }
     }
-
-    //var getObject = function (container, id, callback) {
-    //    _.each(container, function (item) {
-    //        if (item.name === id) callback(item);
-    //        if (item.tree) getObject(item.tree, id, callback);
-    //    });
-    //}
 }
 
 function assignEmployeeToShift(employee) {
@@ -56,9 +49,19 @@ function assignEmployeeToShift(employee) {
             }
         }
     }
+}
 
-    var selectedShift = getSelectedShift();
-    _employee = employee;
+function assignShiftToEmployee(shift) {
+    /*
+     Shift would be clicked, and the controller would be notified
+     The controller would notify the calendar model with the id of this "selected" shift
+     The controller would notify the employee model to update the visibility of the employee menu
+     The calendar model would announce a change, the view would retrieve the id of the newly selected shift and
+     adjust the view
+     The employee model would announce a change and the view would retrieve the updated visibility of the menu and
+     display the menu
+     An employee name would be clicked
+     */
 }
 
 //TODO: Not sure if this is nec. for our purposes since
@@ -115,12 +118,12 @@ ScheduleDispatcher.register(function (payload) {
             break;
 
         case ScheduleConstants.UPDATE_SHIFT_SELECTION:
-            setSelectedShift(action.selectedShift);
+            setSelectedShift(action.shiftID);
             break;
 
         // Respond to SHIFT_ASSIGN action
-        case ScheduleConstants.UPDATE_EMPLOYEE_ASSIGNMENT:
-            assignEmployeeToShift(action.assignee);
+        case ScheduleConstants.UPDATE_EMPLOYEE_SELECTION:
+            assignEmployeeToShift(action.employeeName);
             break;
 
         // Respond to SHIFT_UNASSIGN action

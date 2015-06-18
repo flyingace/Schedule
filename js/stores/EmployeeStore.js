@@ -23,21 +23,11 @@ function unassignShiftToEmployee(index) {
     _selected = _product.variants[index];
 }
 
-// Set cart visibility
-function setEmpListVisible(empListVisible) {
-    _empListVisible = empListVisible;
-}
-
 // Extend Cart Store with EventEmitter to add eventing capabilities
 var EmployeeStore = _.extend({}, EventEmitter.prototype, {
 
     getEmployeeData: function () {
         return _employeeData;
-    },
-
-    // Return cart visibility state
-    getEmpListVisible: function () {
-        return _empListVisible;
     },
 
     // Emit Change event
@@ -77,11 +67,6 @@ ScheduleDispatcher.register(function (payload) {
         // Respond to SHIFT_UNASSIGN action
         case ScheduleConstants.SHIFT_UNASSIGN:
             unassignShiftToEmployee(action.data);
-            break;
-
-        // Respond to UPDATE_LIST_VISIBILITY action
-        case ScheduleConstants.UPDATE_LIST_VISIBILITY:
-            setEmpListVisible(action.empListVisible);
             break;
 
         default:

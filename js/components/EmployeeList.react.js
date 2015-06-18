@@ -10,9 +10,9 @@ var React = require('react'),
     CalendarActions = require('../actions/CalendarActions');
 
 
-var EmployeeMenu = React.createClass({
+var EmployeeList = React.createClass({
 
-    displayName: EmployeeMenu,
+    displayName: EmployeeList,
 
     propTypes: {
         empListVisible: React.PropTypes.bool,
@@ -54,7 +54,7 @@ var EmployeeMenu = React.createClass({
                 {
                     this.props.employeeData.map(function (employee, index) {
                         return (
-                            <EmployeeListItem key = {index} employeeName = {employee.name} totalHours = {employee.totalHours}
+                            <EmployeeListItem key = {index} employeeName = {employee.name} employeeID = {employee.employeeID} totalHours = {employee.totalHours}
                                               availableHours = {employee.availableHours}/>
                         )
                     })
@@ -69,4 +69,4 @@ var EmployeeMenu = React.createClass({
     }
 });
 
-module.exports = EmployeeMenu;
+module.exports = EmployeeList;

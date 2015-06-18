@@ -6,6 +6,7 @@ module.exports = {
             [
                 {
                     name: "S. Birdsall",
+                    employeeID: "sbirdsall",
                     totalHours: 32,
                     availableHours: 32,
                     assignments: [],
@@ -13,6 +14,7 @@ module.exports = {
                 },
                 {
                     name: "A. Brown",
+                    employeeID: "abrown",
                     totalHours: 20,
                     availableHours: 20,
                     assignments: [],
@@ -20,6 +22,7 @@ module.exports = {
                 },
                 {
                     name: "G. Eich-piks",
+                    employeeID: "geichpiks",
                     totalHours: 24,
                     availableHours: 24,
                     assignments: [],
@@ -27,6 +30,7 @@ module.exports = {
                 },
                 {
                     name: "K. Fitzgerald",
+                    employeeID: "kfitzgerald",
                     totalHours: 20,
                     availableHours: 20,
                     assignments: [],
@@ -34,6 +38,7 @@ module.exports = {
                 },
                 {
                     name: "M. Gold",
+                    employeeID: "mgold",
                     totalHours: 40,
                     availableHours: 40,
                     assignments: [],
@@ -41,6 +46,7 @@ module.exports = {
                 },
                 {
                     name: "M. Larkin",
+                    employeeID: "mlarkin",
                     totalHours: 40,
                     availableHours: 40,
                     assignments: [],
@@ -48,6 +54,7 @@ module.exports = {
                 },
                 {
                     name: "C. Lubell",
+                    employeeID: "clubell",
                     totalHours: 40,
                     availableHours: 40,
                     assignments: [],
@@ -55,6 +62,7 @@ module.exports = {
                 },
                 {
                     name: "N. Richey",
+                    employeeID: "nrichey",
                     totalHours: 40,
                     availableHours: 40,
                     assignments: [],
@@ -62,6 +70,7 @@ module.exports = {
                 },
                 {
                     name: "E. Wenzel",
+                    employeeID: "ewenzel",
                     totalHours: 40,
                     availableHours: 40,
                     assignments: [],
@@ -69,6 +78,7 @@ module.exports = {
                 },
                 {
                     name: "H. White",
+                    employeeID: "hw",
                     totalHours: 20,
                     availableHours: 20,
                     assignments: [],

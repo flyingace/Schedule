@@ -20,7 +20,7 @@ var CalendarActions = {
     setSelectedShift: function (shiftID) {
         ScheduleDispatcher.handleAction({
             actionType: ScheduleConstants.UPDATE_SHIFT_SELECTION,
-            selectedShift: shiftID
+            shiftID: shiftID
         });
     },
 

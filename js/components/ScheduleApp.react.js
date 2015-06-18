@@ -5,6 +5,7 @@
 var React = require('react');
 var CalendarStore = require('../stores/CalendarStore');
 var EmployeeStore = require('../stores/EmployeeStore');
+var ScheduleStore = require('../stores/ScheduleStore');
 var Calendar = require('./Calendar.react');
 var EmployeeList = require('./EmployeeList.react');
 var Schedule = require('../utils/Schedule');
@@ -15,7 +16,7 @@ function getScheduleState() {
         calendarData: CalendarStore.getCalendarData(),
         employeeData: EmployeeStore.getEmployeeData(),
         //selectedShift: CalendarStore.getSelectedShift(),
-        employeeListVisible: EmployeeStore.getEmpListVisible()
+        employeeListVisible: ScheduleStore.getEmpListVisibility()
     };
 }
 
@@ -33,12 +34,14 @@ var ScheduleApp = React.createClass({
         //this._setStateWithCalendarData(calendarJSON);
         EmployeeStore.addChangeListener(this._onChange);
         CalendarStore.addChangeListener(this._onChange);
+        ScheduleStore.addChangeListener(this._onChange);
     },
 
     // Remove change listers from stores
     componentWillUnmount: function () {
         EmployeeStore.removeChangeListener(this._onChange);
         CalendarStore.removeChangeListener(this._onChange);
+        ScheduleStore.removeChangeListener(this._onChange);
     },
 
     // Render our child components, passing state via props

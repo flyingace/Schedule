@@ -3,7 +3,7 @@
 /*globals */
 
 var React = require('react');
-var CalendarActions = require('../actions/CalendarActions');
+var EmployeeActions = require('../actions/EmployeeActions');
 
 var EmployeeListItem = React.createClass({
 
@@ -25,7 +25,7 @@ var EmployeeListItem = React.createClass({
     },
 
     onEmployeeAssign: function () {
-      CalendarActions.assignEmployee(this.props.employeeName)
+      EmployeeActions.setAssignedEmployee(this.props.employeeName, this.props.employeeID);
     },
 
     render: function () {
