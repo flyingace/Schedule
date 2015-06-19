@@ -1,0 +1,7 @@
+$day-width: 200px;
+
+.schedule-app {
+  width: $day-width * 7;
+  margin: 0 auto;
+  position: relative;
+}
