@@ -14,9 +14,22 @@ function loadEmployeeData(data) {
     _employeeData = data;
 }
 
-function assignShiftToEmployee(data) {
-    _product = data[0];
-    _selected = data[0].variants[0];
+function assignShiftToEmployee(shift) {
+    var _days, _shifts, i, j, k;
+
+    for (i = 0; i < _calendarData.length; i++) {
+        _days = _calendarData[i].Days;
+        for (j = 0; j < _days.length; j++) {
+            _shifts = _days[j].Shifts;
+            for (k = 0; k < _shifts.length; k++) {
+                if (_shifts[k].selected === true) {
+                    _shifts[k].selected = false;
+                    _shifts[k].shiftAssignee = employee;
+                    return;
+                }
+            }
+        }
+    }
 }
 
 function unassignShiftToEmployee(index) {

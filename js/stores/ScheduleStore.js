@@ -9,11 +9,10 @@ var ScheduleConstants = require('../constants/ScheduleConstants');
 var EventEmitter = require('events').EventEmitter;
 
 // Define initial data points
-var _selectedShiftId, _selectedEmployeeId, _empListIsVisible;
+var _selectedShiftId, _selectedEmployeeId, _empListStatus;
 
 function setSelectedShiftId(shiftID) {
     _selectedShiftId = shiftID;
-    console.log(_selectedShiftId);
 }
 
 function setSelectedEmployeeName(employeeName) {
@@ -25,8 +24,27 @@ function setSelectedEmployeeId(employeeId) {
 }
 
 // Set cart visibility
-function setEmpListVisibility(empListIsVisible) {
-    _empListIsVisible = empListIsVisible;
+function setEmpListStatus(empListIsVisible, targetShift) {
+    var empListPosition = getEmpListPosition(targetShift);
+
+    _empListStatus = {};
+    _empListStatus.isVisible = empListIsVisible;
+    _empListStatus.topPos = empListPosition.topPos;
+    _empListStatus.leftPos = empListPosition.leftPos;
+}
+
+function getEmpListPosition($targetShift) {
+    var listPosition = {topPos: 0, leftPos: 0},
+        shiftWidth, shiftHeight, shiftPosition, topPos, leftPos;
+
+    if ($targetShift) {
+        shiftWidth = $targetShift.width();
+        shiftHeight = $targetShift.height();
+        listPosition.leftPos = $targetShift.position().left + shiftWidth;
+        listPosition.topPos = $targetShift.position().top + shiftHeight;
+    }
+
+    return listPosition;
 }
 
 
@@ -43,8 +61,8 @@ var ScheduleStore = _.extend({}, EventEmitter.prototype, {
         return _selectedEmployeeId;
     },
 
-    getEmpListVisibility: function () {
-        return _empListIsVisible;
+    getEmpListStatus: function () {
+        return _empListStatus;
     },
 
     // Emit Change event
@@ -80,7 +98,7 @@ ScheduleDispatcher.register(function (payload) {
 
         // Respond to SHIFT_ASSIGN action
         case ScheduleConstants.UPDATE_LIST_VISIBILITY:
-            setEmpListVisibility(action.empListIsVisible);
+            setEmpListStatus(action.empListIsVisible, action.targetShift);
             break;
 
         // Respond to SHIFT_UNASSIGN action

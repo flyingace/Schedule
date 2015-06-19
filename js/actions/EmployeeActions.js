@@ -43,11 +43,12 @@ var EmployeeActions = {
         });
     },
 
-    // Show Employee List
-    updateListVisibility: function (empListIsVisible) {
+    // Show & Position Employee List
+    updateListStatus: function (empListIsVisible, targetShift) {
         ScheduleDispatcher.handleAction({
             actionType: ScheduleConstants.UPDATE_LIST_VISIBILITY,
-            empListIsVisible: empListIsVisible
+            empListIsVisible: empListIsVisible,
+            targetShift: targetShift
         });
     }
 };

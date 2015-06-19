@@ -3,8 +3,9 @@
 /*globals */
 
 var React = require('react'),
-    CalendarActions = require('../actions/CalendarActions');
-    EmployeeActions = require('../actions/EmployeeActions');
+    CalendarActions = require('../actions/CalendarActions'),
+    EmployeeActions = require('../actions/EmployeeActions'),
+    $ = require('jquery');
 
 var Shift = React.createClass({
 
@@ -38,11 +39,11 @@ var Shift = React.createClass({
         );
     },
 
-    onShiftClick: function (e) {
-        //console.log(e.currentTarget);
-        //console.log(this.props.shiftID);
+    onShiftClick: function (evt) {
+        var targetShift = $(evt.currentTarget);
+
         CalendarActions.setSelectedShift(this.props.shiftID);
-        EmployeeActions.updateListVisibility(true);
+        EmployeeActions.updateListStatus(true, targetShift);
     },
 
     setClassesFromProps: function () {

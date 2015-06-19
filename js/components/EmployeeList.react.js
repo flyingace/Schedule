@@ -15,13 +15,13 @@ var EmployeeList = React.createClass({
     displayName: EmployeeList,
 
     propTypes: {
-        empListVisible: React.PropTypes.bool,
+        empListStatus: React.PropTypes.object,
         employeeData: React.PropTypes.array
     },
 
     getDefaultProps: function () {
         return {
-            empListVisible: false,
+            empListStatus: {isVisible: false, topPos: 0, leftPos: 0},
             employeeData: []
         };
     },
@@ -41,6 +41,8 @@ var EmployeeList = React.createClass({
     },
 
     render: function () {
+        var listPosition = {top: this.props.empListStatus.topPos, left: this.props.empListStatus.leftPos};
+
         if (!this.props.employeeData.length)
         {
             return (
@@ -49,7 +51,7 @@ var EmployeeList = React.createClass({
         }
 
         return (
-            <ul className = {'employee-list ' + (this.props.empListVisible ? 'visible' : '')} >
+            <ul className = {'employee-list ' + (this.props.empListStatus.isVisible ? 'visible' : '')} style = {listPosition} >
                 <li className = "employee close">Close</li>
                 {
                     this.props.employeeData.map(function (employee, index) {
@@ -65,7 +67,7 @@ var EmployeeList = React.createClass({
     },
 
     onEmployeeSelected: function (e) {
-        EmployeeActions.updateListVisibility(false);
+        EmployeeActions.updateListStatus(false, null);
     }
 });
 
