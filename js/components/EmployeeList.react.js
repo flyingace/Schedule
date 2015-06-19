@@ -56,8 +56,8 @@ var EmployeeList = React.createClass({
                 {
                     this.props.employeeData.map(function (employee, index) {
                         return (
-                            <EmployeeListItem key = {index} employeeName = {employee.name} employeeID = {employee.employeeID} totalHours = {employee.totalHours}
-                                              availableHours = {employee.availableHours}/>
+                            <EmployeeListItem key = {index} employeeName = {employee.employeeName} employeeID = {employee.employeeID} committedHours = {employee.committedHours}
+                                              assignedHours = {employee.assignedHours}/>
                         )
                     })
                 }

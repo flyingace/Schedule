@@ -16,7 +16,7 @@ function loadCalendarData(data) {
 }
 
 function setSelectedShift(shiftID) {
-    var _days, _shifts, i, j, k;
+    var _days, _shifts, _selectedShift, i, j, k;
 
     for (i = 0; i < _calendarData.length; i++) {
         _days = _calendarData[i].Days;
@@ -25,6 +25,8 @@ function setSelectedShift(shiftID) {
             for (k = 0; k < _shifts.length; k++) {
                 if (_shifts[k].shiftID === shiftID) {
                     _shifts[k].selected = true;
+
+                    _selectedShift = _shifts[k]
                     console.log(_shifts[k]);
                     return;
                 }
@@ -33,25 +35,15 @@ function setSelectedShift(shiftID) {
     }
 }
 
-function assignEmployeeToShift(employee) {
-    var _days, _shifts, i, j, k;
+//Instead of selecting the shift by ID and modifying it in the data, get the selected shift itself and then locate that shift object in the array of shift objects.
 
-    for (i = 0; i < _calendarData.length; i++) {
-        _days = _calendarData[i].Days;
-        for (j = 0; j < _days.length; j++) {
-            _shifts = _days[j].Shifts;
-            for (k = 0; k < _shifts.length; k++) {
-                if (_shifts[k].selected === true) {
-                    _shifts[k].selected = false;
-                    _shifts[k].shiftAssignee = employee;
-                    return;
-                }
-            }
-        }
-    }
-}
+/*
+ var arr = [{thing1:'one'}, {thing1:'two'}, {thing1:'three'}, {thing1:'four'}, {thing1:'five'}, {thing1:'six'}, {thing1:'seven'}];
+ var up = arr [2];
+ up.thing1 = 'twelve';
+ console.log(arr[arr.indexOf(up)].thing1); //twelve
+*/
 
-function assignShiftToEmployee(shift) {
     /*
      Shift would be clicked, and the controller would be notified
      The controller would notify the calendar model with the id of this "selected" shift
@@ -62,7 +54,6 @@ function assignShiftToEmployee(shift) {
      display the menu
      An employee name would be clicked
      */
-}
 
 //TODO: Not sure if this is nec. for our purposes since
 // employee assignment is only used for display at the moment
@@ -85,6 +76,24 @@ var CalendarStore = _.extend({}, EventEmitter.prototype, {
         return _selectedShift;
     },
 
+    assignEmployeeToShift: function (employee) {
+        var _days, _shifts, i, j, k;
+
+        for (i = 0; i < _calendarData.length; i++) {
+            _days = _calendarData[i].Days;
+            for (j = 0; j < _days.length; j++) {
+                _shifts = _days[j].Shifts;
+                for (k = 0; k < _shifts.length; k++) {
+                    if (_shifts[k].selected === true) {
+                        _shifts[k].selected = false;
+                        _shifts[k].shiftAssignee = employee;
+                        return;
+                    }
+                }
+            }
+        }
+    },
+
     getAssignedEmployee: function () {
         return _employee;
     },
@@ -104,7 +113,8 @@ var CalendarStore = _.extend({}, EventEmitter.prototype, {
         this.removeListener('change', callback);
     }
 
-});
+}
+);
 
 // Register callback with ScheduleDispatcher
 ScheduleDispatcher.register(function (payload) {
@@ -118,13 +128,13 @@ ScheduleDispatcher.register(function (payload) {
             break;
 
         case ScheduleConstants.UPDATE_SHIFT_SELECTION:
-            setSelectedShift(action.shiftID);
+            setSelectedShiftID(action.shiftID);
             break;
 
         // Respond to SHIFT_ASSIGN action
-        case ScheduleConstants.UPDATE_EMPLOYEE_SELECTION:
-            assignEmployeeToShift(action.employeeName);
-            break;
+        //case ScheduleConstants.UPDATE_EMPLOYEE_SELECTION:
+        //    assignEmployeeToShift(action.employeeName);
+        //    break;
 
         // Respond to SHIFT_UNASSIGN action
         case ScheduleConstants.SHIFT_UNASSIGN:
@@ -140,6 +150,7 @@ ScheduleDispatcher.register(function (payload) {
 
     return true;
 
-});
+}
+);
 
 module.exports = CalendarStore;

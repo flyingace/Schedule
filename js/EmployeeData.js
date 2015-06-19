@@ -7,82 +7,82 @@ module.exports = {
         localStorage.setItem('employees', JSON.stringify(
             [
                 {
-                    name: 'S. Birdsall',
+                    employeeName: 'S. Birdsall',
                     employeeID: 'sbirdsall',
-                    totalHours: 32,
-                    availableHours: 32,
+                    committedHours: 32,
+                    assignedHours: 32,
                     assignments: [],
                     commitment: 0.8
                 },
                 {
-                    name: 'A. Brown',
+                    employeeName: 'A. Brown',
                     employeeID: 'abrown',
-                    totalHours: 20,
-                    availableHours: 20,
+                    committedHours: 20,
+                    assignedHours: 20,
                     assignments: [],
                     commitment: 0.5
                 },
                 {
-                    name: 'G. Eich-piks',
+                    employeeName: 'G. Eich-piks',
                     employeeID: 'geichpiks',
-                    totalHours: 24,
-                    availableHours: 24,
+                    committedHours: 24,
+                    assignedHours: 24,
                     assignments: [],
                     commitment: 0.6
                 },
                 {
-                    name: 'K. Fitzgerald',
+                    employeeName: 'K. Fitzgerald',
                     employeeID: 'kfitzgerald',
-                    totalHours: 20,
-                    availableHours: 20,
+                    committedHours: 20,
+                    assignedHours: 20,
                     assignments: [],
                     commitment: 0.5
                 },
                 {
-                    name: 'M. Gold',
+                    employeeName: 'M. Gold',
                     employeeID: 'mgold',
-                    totalHours: 40,
-                    availableHours: 40,
+                    committedHours: 40,
+                    assignedHours: 40,
                     assignments: [],
                     commitment: 1
                 },
                 {
-                    name: 'M. Larkin',
+                    employeeName: 'M. Larkin',
                     employeeID: 'mlarkin',
-                    totalHours: 40,
-                    availableHours: 40,
+                    committedHours: 40,
+                    assignedHours: 40,
                     assignments: [],
                     commitment: 1
                 },
                 {
-                    name: 'C. Lubell',
+                    employeeName: 'C. Lubell',
                     employeeID: 'clubell',
-                    totalHours: 40,
-                    availableHours: 40,
+                    committedHours: 40,
+                    assignedHours: 40,
                     assignments: [],
                     commitment: 1
                 },
                 {
-                    name: 'N. Richey',
+                    employeeName: 'N. Richey',
                     employeeID: 'nrichey',
-                    totalHours: 40,
-                    availableHours: 40,
+                    committedHours: 40,
+                    assignedHours: 40,
                     assignments: [],
                     commitment: 1
                 },
                 {
-                    name: 'E. Wenzel',
+                    employeeName: 'E. Wenzel',
                     employeeID: 'ewenzel',
-                    totalHours: 40,
-                    availableHours: 40,
+                    committedHours: 40,
+                    assignedHours: 40,
                     assignments: [],
                     commitment: 1
                 },
                 {
-                    name: 'H. White',
+                    employeeName: 'H. White',
                     employeeID: 'hw',
-                    totalHours: 20,
-                    availableHours: 20,
+                    committedHours: 20,
+                    assignedHours: 20,
                     assignments: [],
                     commitment: 0.5
                 }

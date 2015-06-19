@@ -6,14 +6,16 @@ var $ = require('jquery');
 var _ = require('lodash');
 var ScheduleDispatcher = require('../dispatcher/ScheduleDispatcher');
 var ScheduleConstants = require('../constants/ScheduleConstants');
+var CalendarStore = require('./CalendarStore');
+var EmployeeStore = require('./EmployeeStore');
 var EventEmitter = require('events').EventEmitter;
 
 // Define initial data points
 var _selectedShiftId, _selectedEmployeeId, _empListStatus;
 
-function setSelectedShiftId(shiftID) {
-    _selectedShiftId = shiftID;
-}
+//function setSelectedShiftId(shiftID) {
+//    _selectedShiftId = shiftID;
+//}
 
 function setSelectedEmployeeName(employeeName) {
     _selectedEmployeeName = employeeName;
@@ -40,23 +42,24 @@ function getEmpListPosition($targetShift) {
     if ($targetShift) {
         shiftWidth = $targetShift.width();
         shiftHeight = $targetShift.height();
-        listPosition.leftPos = $targetShift.position().left + shiftWidth;
+        listPosition.leftPos = $targetShift.position().left; // + shiftWidth;
         listPosition.topPos = $targetShift.position().top + shiftHeight;
     }
 
     return listPosition;
 }
 
+function matchShiftAndEmployee() {
+    var selectedShiftID = CalendarStore.getSelectedShiftID(),
+        selectedEmployeeID = EmployeeStore.getSelectedEmployeeID();
+
+    CalendarStore.assignEmployeeToShift(employee);
+    EmployeeStore.assignShiftToEmployee(selectedShift);
+}
 
 // Extend ScheduleStore with EventEmitter to add eventing capabilities
 var ScheduleStore = _.extend({}, EventEmitter.prototype, {
 
-    // Return selected Shift
-    getSelectedShiftId: function () {
-        return _selectedShiftId;
-    },
-
-    // Return selected Shift
     getSelectedEmployeeId: function () {
         return _selectedEmployeeId;
     },
@@ -87,13 +90,13 @@ ScheduleDispatcher.register(function (payload) {
 
     switch (action.actionType) {
 
-        case ScheduleConstants.UPDATE_SHIFT_SELECTION:
-            setSelectedShiftId(action.shiftID);
-            break;
+        //case ScheduleConstants.UPDATE_SHIFT_SELECTION:
+        //    setSelectedShiftId(action.shiftID);
+        //    break;
 
         case ScheduleConstants.UPDATE_EMPLOYEE_SELECTION:
-            setSelectedEmployeeName(action.employeeName);
             setSelectedEmployeeId(action.employeeID);
+            matchShiftAndEmployee();
             break;
 
         // Respond to SHIFT_ASSIGN action
