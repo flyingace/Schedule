@@ -11,7 +11,7 @@ module.exports = {
                     employeeID: 'sbirdsall',
                     committedHours: 32,
                     assignedHours: 32,
-                    assignments: [],
+                    assignedShifts: [],
                     commitment: 0.8
                 },
                 {
@@ -19,7 +19,7 @@ module.exports = {
                     employeeID: 'abrown',
                     committedHours: 20,
                     assignedHours: 20,
-                    assignments: [],
+                    assignedShifts: [],
                     commitment: 0.5
                 },
                 {
@@ -27,7 +27,7 @@ module.exports = {
                     employeeID: 'geichpiks',
                     committedHours: 24,
                     assignedHours: 24,
-                    assignments: [],
+                    assignedShifts: [],
                     commitment: 0.6
                 },
                 {
@@ -35,7 +35,7 @@ module.exports = {
                     employeeID: 'kfitzgerald',
                     committedHours: 20,
                     assignedHours: 20,
-                    assignments: [],
+                    assignedShifts: [],
                     commitment: 0.5
                 },
                 {
@@ -43,7 +43,7 @@ module.exports = {
                     employeeID: 'mgold',
                     committedHours: 40,
                     assignedHours: 40,
-                    assignments: [],
+                    assignedShifts: [],
                     commitment: 1
                 },
                 {
@@ -51,7 +51,7 @@ module.exports = {
                     employeeID: 'mlarkin',
                     committedHours: 40,
                     assignedHours: 40,
-                    assignments: [],
+                    assignedShifts: [],
                     commitment: 1
                 },
                 {
@@ -59,7 +59,7 @@ module.exports = {
                     employeeID: 'clubell',
                     committedHours: 40,
                     assignedHours: 40,
-                    assignments: [],
+                    assignedShifts: [],
                     commitment: 1
                 },
                 {
@@ -67,7 +67,7 @@ module.exports = {
                     employeeID: 'nrichey',
                     committedHours: 40,
                     assignedHours: 40,
-                    assignments: [],
+                    assignedShifts: [],
                     commitment: 1
                 },
                 {
@@ -75,7 +75,7 @@ module.exports = {
                     employeeID: 'ewenzel',
                     committedHours: 40,
                     assignedHours: 40,
-                    assignments: [],
+                    assignedShifts: [],
                     commitment: 1
                 },
                 {
@@ -83,7 +83,7 @@ module.exports = {
                     employeeID: 'hw',
                     committedHours: 20,
                     assignedHours: 20,
-                    assignments: [],
+                    assignedShifts: [],
                     commitment: 0.5
                 }
             ]

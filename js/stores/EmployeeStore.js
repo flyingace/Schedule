@@ -8,22 +8,37 @@ var ScheduleConstants = require('../constants/ScheduleConstants');
 var EventEmitter = require('events').EventEmitter;
 
 // Define initial data points
-var _employeeData = {}, _empListVisible = false, _selectedEmployeeID;
+var _employeeData = {}, _selectedEmployee = {}, _empListVisible = false;
 
 function loadEmployeeData(data) {
     _employeeData = data;
 }
 
-function setSelectedEmployeeID(employeeID) {
-    _selectedEmployeeID = employeeID;
+function setSelectedEmployee(employeeID) {
+    var _employee = {};
+
+    for (var i = 0; i < _employeeData.length; i++) {
+        _employee = _employeeData[i];
+
+        if (_employee.employeeID === employeeID) {
+            _selectedEmployee = _employee;
+            return;
+        }
+    }
 }
 
-function updateSelectedEmployee(employeeID) {
-
+function _unsetSelectedEmployee() {
+    _selectedEmployee = {};
 }
 
-function unassignShiftToEmployee(index) {
-    _selected = _product.variants[index];
+function _assignShiftToEmployee(shift) {
+    _selectedEmployee.assignedShifts.push(shift.shiftID);
+    _selectedEmployee.assignedHours -= shift.shiftLength;
+}
+
+function unassignShiftToEmployee(shift) {
+    _selectedEmployee.assignedShifts.pop(shift.shiftID);
+    _selectedEmployee.assignedHours += shift.shiftLength;
 }
 
 // Extend Cart Store with EventEmitter to add eventing capabilities
@@ -33,24 +48,13 @@ var EmployeeStore = _.extend({}, EventEmitter.prototype, {
             return _employeeData;
         },
 
-        getSelectedEmployeeID: function () {
-            return _selectedEmployeeID;
+        getSelectedEmployee: function () {
+            return _selectedEmployee;
         },
 
-        getSelectedEmployee: function (employeeID) {
-            var _selectedEmployee = {},
-                _employee = {},
-                i;
-
-            for (i = 0; i < _employeeData.length; i++) {
-                _employee = _employeeData[i];
-
-                if (_employee.employeeID === employeeID) {
-                    _selectedEmployee = _employee;
-                }
-            }
-
-            return _selectedEmployee
+        assignShiftToEmployee: function (shift) {
+            _assignShiftToEmployee(shift);
+            _unsetSelectedEmployee();
         },
 
         // Emit Change event
@@ -73,8 +77,7 @@ var EmployeeStore = _.extend({}, EventEmitter.prototype, {
 
 // Register callback with ScheduleDispatcher
 ScheduleDispatcher.register(function (payload) {
-        var action = payload.action,
-            text;
+        var action = payload.action;
 
         switch (action.actionType) {
 
@@ -83,14 +86,9 @@ ScheduleDispatcher.register(function (payload) {
                 loadEmployeeData(action.data);
                 break;
 
-            //case ScheduleConstants.UPDATE_EMPLOYEE_SELECTION:
-            //    assignShiftToEmployee(action.employeeID);
-            //    break;
-
-            // Respond to SHIFT_ASSIGN action
-            //case ScheduleConstants.SHIFT_ASSIGN:
-            //    assignShiftToEmployee(action.data);
-            //    break;
+            case ScheduleConstants.UPDATE_EMPLOYEE_SELECTION:
+                setSelectedEmployee(action.employeeID);
+                break;
 
             // Respond to SHIFT_UNASSIGN action
             case ScheduleConstants.SHIFT_UNASSIGN:
@@ -105,7 +103,6 @@ ScheduleDispatcher.register(function (payload) {
         EmployeeStore.emitChange();
 
         return true;
-
     }
 );
 

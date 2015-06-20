@@ -18,10 +18,9 @@ var EmployeeActions = {
 
 
     // Assign Shift to Employee
-    setAssignedEmployee: function (employeeName, employeeID) {
+    setAssignedEmployee: function (employeeID) {
         ScheduleDispatcher.handleAction({
             actionType: ScheduleConstants.UPDATE_EMPLOYEE_SELECTION,
-            employeeName: employeeName,
             employeeID: employeeID
         });
     },

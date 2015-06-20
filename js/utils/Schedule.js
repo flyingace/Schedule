@@ -133,6 +133,7 @@ module.exports =  {
                     shiftName: 'L&D Day',
                     required: shiftRequirementArray[0],
                     shiftAssignee: 'Unassigned',
+                    shiftAssigneeID: '',
                     shiftLength: 12,
                     shiftID: dayID + '_LD',
                     selected: false
@@ -141,6 +142,7 @@ module.exports =  {
                     shiftName: 'L&D Night',
                     required: shiftRequirementArray[1],
                     shiftAssignee: 'Unassigned',
+                    shiftAssigneeID: '',
                     shiftLength: 12,
                     shiftID: dayID + '_LN',
                     selected: false
@@ -149,6 +151,7 @@ module.exports =  {
                     shiftName: 'Clinic 1',
                     required: shiftRequirementArray[2],
                     shiftAssignee: 'Unassigned',
+                    shiftAssigneeID: '',
                     shiftLength: 8,
                     shiftID: dayID + '_C1',
                     selected: false
@@ -157,6 +160,7 @@ module.exports =  {
                     shiftName: 'Clinic 2',
                     required: shiftRequirementArray[3],
                     shiftAssignee: 'Unassigned',
+                    shiftAssigneeID: '',
                     shiftLength: 8,
                     shiftID: dayID + '_C2',
                     selected: false
@@ -165,6 +169,7 @@ module.exports =  {
                     shiftName: 'High Risk',
                     required: shiftRequirementArray[4],
                     shiftAssignee: 'Unassigned',
+                    shiftAssigneeID: '',
                     shiftLength: 8,
                     shiftID: dayID + '_HR',
                     selected: false
@@ -173,6 +178,7 @@ module.exports =  {
                     shiftName: 'Friday Coverage',
                     required: shiftRequirementArray[5],
                     shiftAssignee: 'Unassigned',
+                    shiftAssigneeID: '',
                     shiftLength: 4,
                     shiftID: dayID + '_FC',
                     selected: false

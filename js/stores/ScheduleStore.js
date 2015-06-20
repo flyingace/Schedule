@@ -16,15 +16,6 @@ var _selectedShiftId, _selectedEmployeeId, _empListStatus;
 //function setSelectedShiftId(shiftID) {
 //    _selectedShiftId = shiftID;
 //}
-
-function setSelectedEmployeeName(employeeName) {
-    _selectedEmployeeName = employeeName;
-}
-
-function setSelectedEmployeeId(employeeId) {
-    _selectedEmployeeId = employeeId;
-}
-
 // Set cart visibility
 function setEmpListStatus(empListIsVisible, targetShift) {
     var empListPosition = getEmpListPosition(targetShift);
@@ -50,19 +41,19 @@ function getEmpListPosition($targetShift) {
 }
 
 function matchShiftAndEmployee() {
-    var selectedShiftID = CalendarStore.getSelectedShiftID(),
-        selectedEmployeeID = EmployeeStore.getSelectedEmployeeID();
+    var selectedShift = CalendarStore.getSelectedShift(),
+        selectedEmployee = EmployeeStore.getSelectedEmployee();
 
-    CalendarStore.assignEmployeeToShift(employee);
+    /*
+    Is it possible for these two methods to have callbacks that will hide the menu, deselect the shift
+    And reset the values for selected employee and selected shift?
+     */
+    CalendarStore.assignEmployeeToShift(selectedEmployee);
     EmployeeStore.assignShiftToEmployee(selectedShift);
 }
 
 // Extend ScheduleStore with EventEmitter to add eventing capabilities
 var ScheduleStore = _.extend({}, EventEmitter.prototype, {
-
-    getSelectedEmployeeId: function () {
-        return _selectedEmployeeId;
-    },
 
     getEmpListStatus: function () {
         return _empListStatus;
@@ -95,7 +86,6 @@ ScheduleDispatcher.register(function (payload) {
         //    break;
 
         case ScheduleConstants.UPDATE_EMPLOYEE_SELECTION:
-            setSelectedEmployeeId(action.employeeID);
             matchShiftAndEmployee();
             break;
 

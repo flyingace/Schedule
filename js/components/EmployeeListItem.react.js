@@ -25,7 +25,7 @@ var EmployeeListItem = React.createClass({
     },
 
     onEmployeeAssign: function () {
-      EmployeeActions.setAssignedEmployee(this.props.employeeName, this.props.employeeID);
+      EmployeeActions.setAssignedEmployee(this.props.employeeID);
     },
 
     render: function () {
