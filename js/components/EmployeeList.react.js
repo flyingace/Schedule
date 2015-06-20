@@ -61,7 +61,6 @@ var EmployeeList = React.createClass({
                         )
                     })
                 }
-                <li className = "employee">Unassigned</li>
             </ul>
         );
     },

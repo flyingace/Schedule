@@ -80,11 +80,19 @@ module.exports = {
                 },
                 {
                     employeeName: 'H. White',
-                    employeeID: 'hw',
+                    employeeID: 'hwhite',
                     committedHours: 20,
                     assignedHours: 20,
                     assignedShifts: [],
                     commitment: 0.5
+                },
+                {
+                    employeeName: 'Unassigned',
+                    employeeID: 'unassigned',
+                    committedHours: 0,
+                    assignedHours: 0,
+                    assignedShifts: [],
+                    commitment: 0
                 }
             ]
         ));

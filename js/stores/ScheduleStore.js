@@ -44,10 +44,6 @@ function matchShiftAndEmployee() {
     var selectedShift = CalendarStore.getSelectedShift(),
         selectedEmployee = EmployeeStore.getSelectedEmployee();
 
-    /*
-    Is it possible for these two methods to have callbacks that will hide the menu, deselect the shift
-    And reset the values for selected employee and selected shift?
-     */
     CalendarStore.assignEmployeeToShift(selectedEmployee);
     EmployeeStore.assignShiftToEmployee(selectedShift);
 }
