@@ -6,7 +6,7 @@ var React = require('react'),
     $ = require('jquery'),
     EmployeeData = require('../utils/Employees'),
     EmployeeActions = require('../actions/EmployeeActions'),
-    EmployeeListItem = require('./EmployeeListItem.react')
+    EmployeeListItem = require('./EmployeeListItem.react'),
     CalendarActions = require('../actions/CalendarActions');
 
 
@@ -35,10 +35,20 @@ var EmployeeList = React.createClass({
 
     componentDidMount: function () {
         $('.employee').on('click', this.onEmployeeSelected);
+        $('.close').on('click', this.onCloseClicked);
     },
 
     componentWillUnmount: function () {
     },
+
+    onEmployeeSelected: function (e) {
+        EmployeeActions.updateListStatus(false, null);
+    },
+
+    onCloseClicked: function () {
+        CalendarActions.setSelectedShift();
+    },
+
 
     render: function () {
         var listPosition = {top: this.props.empListStatus.topPos, left: this.props.empListStatus.leftPos};
@@ -63,10 +73,6 @@ var EmployeeList = React.createClass({
                 }
             </ul>
         );
-    },
-
-    onEmployeeSelected: function (e) {
-        EmployeeActions.updateListStatus(false, null);
     }
 });
 

@@ -17,6 +17,11 @@ function loadCalendarData(data) {
 function _setSelectedShift(shiftID) {
     var _days, _shifts, _shift;
 
+    if (!shiftID) {
+        _unsetSelectedShift();
+        return;
+    }
+
     for (var i = 0; i < _calendarData.length; i++) {
         _days = _calendarData[i].Days;
         for (var j = 0; j < _days.length; j++) {
