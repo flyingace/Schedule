@@ -20,13 +20,13 @@
 .day {
   width: 194px;
   height: 193px;
-  /* background-color: #ffffff; */
+  background-color: #ffffff;
   flex: 0 0 auto;
   overflow: hidden;
   padding: 3px;
   margin: 0; }
   .day:nth-of-type(2n + 1) {
-    /* background-color: #f0f0f0; */ }
+    background-color: #f0f0f0; }
   .day h2 {
     text-align: right;
     margin: 5px 0; }
@@ -47,9 +47,10 @@
 .shift {
   height: 25px;
   width: 186px;
+  font-family: Helvetica, sans-serif;
+  color: black;
   font-size: 12px;
   line-height: 25px;
-  font-family: Helvetica, sans-serif;
   padding: 0 4px;
   margin-bottom: 4px;
   border-radius: 3px;
@@ -65,11 +66,11 @@
   .shift.hr {
     background-color: #ede7b1; }
   .shift.fc {
-    background-color: #a9def9;
-    color: white; }
+    background-color: #a9def9; }
   .shift.unassigned {
-    background-color: lightcoral;
-    color: black; }
+    background-image: url("../img/unassigned_dot.png");
+    background-repeat: no-repeat;
+    background-position: right; }
   .shift.selected {
     background-color: white; }
 

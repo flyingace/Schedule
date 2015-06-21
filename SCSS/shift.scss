@@ -1,9 +1,10 @@
 .shift {
   height: 25px;
   width: 186px;
+  font-family: Helvetica, sans-serif;
+  color: black;
   font-size: 12px;
   line-height: 25px;
-  font-family: Helvetica, sans-serif;
   padding: 0 4px;
   margin-bottom: 4px;
   border-radius: 3px;
@@ -34,8 +35,9 @@
   }
 
   &.unassigned {
-    background-color: lightcoral;
-    color: black;
+    background-image: url('../img/unassigned_dot.png');
+    background-repeat: no-repeat;
+    background-position: right;
   }
 
   &.selected {
