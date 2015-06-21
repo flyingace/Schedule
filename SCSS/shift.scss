@@ -1,5 +1,6 @@
 .shift {
   height: 25px;
+  width: 186px;
   font-size: 12px;
   line-height: 25px;
   font-family: Helvetica, sans-serif;
@@ -12,12 +13,32 @@
     cursor: pointer;
   }
 
+  &.ld {
+    background-color: $color1;
+  }
+
+  &.ln {
+    background-color: $color2;
+  }
+
+  &.c1, &.c2 {
+    background-color: $color3;
+  }
+
+  &.hr {
+    background-color: $color4;
+  }
+
+  &.fc {
+    background-color: $color5;
+  }
 
   &.unassigned {
-    background-color: red;
+    background-color: lightcoral;
+    color: black;
   }
 
   &.selected {
-    background-color: lightblue;
+    background-color: white;
   }
 }

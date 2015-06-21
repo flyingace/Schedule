@@ -2,12 +2,14 @@
   position: absolute;
   z-index: 50;
   display: none;
-  list-style-type: none;
+  width: 194px;
   padding: 2px;
   margin: 0;
-  background-color: mediumturquoise;
+  list-style-type: none;
   font-family: Helvetica, sans-serif;
+  font-size: 14px;
   border-radius: 4px;
+  background-color: white;
 
   &.visible {
     display: block;
@@ -17,13 +19,23 @@
     display: block;
     padding: 3px;
     cursor: pointer;
+    border-bottom: 1px solid black;
 
-    &:nth-of-type(2n) {
-      background-color: lightgray;
+    &:last-of-type {
+      border: none;
     }
 
     &:hover {
       background-color: lightblue;
+    }
+  }
+
+  .close {
+    text-align: right;
+
+    &:hover {
+      background-color: white;
+      color: red;
     }
   }
 }

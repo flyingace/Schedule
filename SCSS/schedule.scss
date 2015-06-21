@@ -1,5 +1,25 @@
 $day-width: 200px;
 
+//$color1: #cce6ff; //rgba(204, 230, 255, 100)
+//$color2: #4f094a; //rgba(79, 9, 74, 100)
+//$color3: #009157; //rgba(0, 145, 87, 100)
+//$color4: #d8d634; //rgba(216, 214, 52, 100)
+//$color5: #99152f; //rgba(153, 21, 47, 100)
+//
+//$color1: #cae7b9; //rgba(202, 231, 185, 100)
+//$color2: #f3de8a; //rgba(243, 222, 138, 100)
+//$color3: #eb9486; //rgba(235, 148, 134, 100)
+//$color4: #7e7f9a; //rgba(126, 127, 154, 100)
+//$color5: #97a7b3; //rgba(151, 167, 179, 100)
+
+
+$color1: #d3f8e2; //rgba(211, 248, 226, 100)
+$color2: #e4c1f9; //rgba(228, 193, 249, 100)
+$color3: #f694c1; //rgba(246, 148, 193, 100)
+$color4: #ede7b1; //rgba(237, 231, 177, 100)
+$color5: #a9def9; //rgba(169, 222, 249, 100)
+
+
 .schedule-app {
   width: $day-width * 7;
   margin: 0 auto;
