@@ -44,6 +44,7 @@ function matchShiftAndEmployee() {
     var selectedShift = CalendarStore.getSelectedShift(),
         selectedEmployee = EmployeeStore.getSelectedEmployee();
 
+    EmployeeStore.unassignShiftToEmployee(selectedShift);
     CalendarStore.assignEmployeeToShift(selectedEmployee);
     EmployeeStore.assignShiftToEmployee(selectedShift);
 }

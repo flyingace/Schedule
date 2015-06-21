@@ -45,7 +45,8 @@ function _unsetSelectedShift() {
 }
 
 function _assignEmployeeToShift(employee) {
-    _selectedShift.shiftAssignee = employee.employeeName;
+    _selectedShift.shiftAssignee = employee;
+    _selectedShift.shiftAssigneeName = employee.employeeName;
     _selectedShift.shiftAssigneeID = employee.employeeID;
 }
 

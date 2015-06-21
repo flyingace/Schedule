@@ -46,7 +46,7 @@ var EmployeeList = React.createClass({
     },
 
     onCloseClicked: function () {
-        CalendarActions.setSelectedShift();
+        CalendarActions.setSelectedShift(null);
     },
 
 
@@ -62,7 +62,7 @@ var EmployeeList = React.createClass({
 
         return (
             <ul className = {'employee-list ' + (this.props.empListStatus.isVisible ? 'visible' : '')} style = {listPosition} >
-                <li className = "employee close">Close</li>
+                <li className = "employee close">x</li>
                 {
                     this.props.employeeData.map(function (employee, index) {
                         return (

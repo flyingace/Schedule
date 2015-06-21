@@ -29,7 +29,8 @@ var Day = React.createClass({
                         if (shiftSet.required) {
                             return (
                                 <Shift shiftName = {shiftSet.shiftName} shiftID = {shiftSet.shiftID}
-                                       shiftSelected = {shiftSet.selected} shiftAssignee = {shiftSet.shiftAssignee} key = {index}/>
+                                       shiftSelected = {shiftSet.selected} shiftAssignee = {shiftSet.shiftAssignee}
+                                       shiftAssigneeName = {shiftSet.shiftAssigneeName} key = {index}/>
                             )
                         }
                     })

@@ -36,9 +36,10 @@ function _assignShiftToEmployee(shift) {
     _selectedEmployee.assignedHours -= shift.shiftLength;
 }
 
-function unassignShiftToEmployee(shift) {
-    _selectedEmployee.assignedShifts.pop(shift.shiftID);
-    _selectedEmployee.assignedHours += shift.shiftLength;
+function _unassignShiftToEmployee(shift) {
+    var _deselectedEmployee = shift.shiftAssignee;
+    _deselectedEmployee.assignedShifts.pop(shift.shiftID);
+    _deselectedEmployee.assignedHours += shift.shiftLength;
 }
 
 // Extend Cart Store with EventEmitter to add eventing capabilities
@@ -55,6 +56,10 @@ var EmployeeStore = _.extend({}, EventEmitter.prototype, {
         assignShiftToEmployee: function (shift) {
             _assignShiftToEmployee(shift);
             _unsetSelectedEmployee();
+        },
+
+        unassignShiftToEmployee: function (shift) {
+            _unassignShiftToEmployee(shift);
         },
 
         // Emit Change event
