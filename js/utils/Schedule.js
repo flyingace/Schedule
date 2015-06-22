@@ -28,6 +28,7 @@ module.exports = {
         this.staff.push(employee);
     },
 
+    //in use
     createShifts: function createShifts(dayInfo) {
         var shiftNameArray = dayInfo.shifts,
             shiftDate = dayInfo.date,
@@ -52,6 +53,7 @@ module.exports = {
         return shift;
     },
 
+    //in use
     /**
      * Create array of consecutive dates starting with startDate and
      * ending with endDate in the format 'dddd, MMMM D YYYY' (eg, 'Sunday, May 10, 2015')
@@ -98,12 +100,10 @@ module.exports = {
 
         return calendarJSON;
     },
-
-    getDayObject: function getDayObject(formattedDate, dayDate) {
-        var dayName = formattedDate[0],
-            dayID = formattedDate[2] + formattedDate[1] + formattedDate[3],
-            shiftRequirementArray = [];
-
+    
+    getShiftRequirements: function getShiftRequirements(dayName) {
+        var shiftRequirementArray = [];
+        
         switch (dayName) {
             case 'Monday':
             case 'Thursday':
@@ -124,6 +124,16 @@ module.exports = {
                 break;
         }
 
+        return shiftRequirementArray;
+    },
+
+    //in use
+    getDayObject: function getDayObject(formattedDate, dayDate) {
+        var dayName = formattedDate[0],
+            dayID = formattedDate[2] + formattedDate[1] + formattedDate[3],
+            shiftRequirementArray = [];
+
+
         return {
             DayDate: dayDate,
             DayName: dayName,
@@ -131,7 +141,7 @@ module.exports = {
             Shifts: [
                 {
                     shiftName: 'L&D Day',
-                    required: shiftRequirementArray[0],
+                    required: this.getShiftRequirements(dayName)[0],
                     shiftAssignee: {
                         employeeName: 'Unassigned',
                         employeeID: 'unassigned',
@@ -147,7 +157,7 @@ module.exports = {
                 },
                 {
                     shiftName: 'L&D Night',
-                    required: shiftRequirementArray[1],
+                    required: this.getShiftRequirements(dayName)[1],
                     shiftAssignee: {
                         employeeName: 'Unassigned',
                         employeeID: 'unassigned',
@@ -163,7 +173,7 @@ module.exports = {
                 },
                 {
                     shiftName: 'Clinic 1',
-                    required: shiftRequirementArray[2],
+                    required: this.getShiftRequirements(dayName)[2],
                     shiftAssignee: {
                         employeeName: 'Unassigned',
                         employeeID: 'unassigned',
@@ -179,7 +189,7 @@ module.exports = {
                 },
                 {
                     shiftName: 'Clinic 2',
-                    required: shiftRequirementArray[3],
+                    required: this.getShiftRequirements(dayName)[3],
                     shiftAssignee: {
                         employeeName: 'Unassigned',
                         employeeID: 'unassigned',
@@ -195,7 +205,7 @@ module.exports = {
                 },
                 {
                     shiftName: 'High Risk',
-                    required: shiftRequirementArray[4],
+                    required: this.getShiftRequirements(dayName)[4],
                     shiftAssignee: {
                         employeeName: 'Unassigned',
                         employeeID: 'unassigned',
@@ -211,7 +221,7 @@ module.exports = {
                 },
                 {
                     shiftName: 'Friday Coverage',
-                    required: shiftRequirementArray[5],
+                    required: this.getShiftRequirements(dayName)[5],
                     shiftAssignee: {
                         employeeName: 'Unassigned',
                         employeeID: 'unassigned',
@@ -229,6 +239,7 @@ module.exports = {
         };
     },
 
+    //in use
     getShifts: function getShifts(day) {
         var dayAndDate = day.split(', '),
             shiftsForDay = {date: dayAndDate[1]};
@@ -254,6 +265,7 @@ module.exports = {
         return shiftsForDay;
     },
 
+    //in use
     assignShift: function assignShift(shift) {
         var candidate;
 
@@ -268,6 +280,7 @@ module.exports = {
         }
     },
 
+    //in use
     assignShifts: function assignShifts(shiftsForDay) {
 
         for (var i = 0; i < shiftsForDay.length; i++) {
@@ -275,6 +288,7 @@ module.exports = {
         }
     },
 
+    //in use
     //TODO: Maybe add something to this that checks whether the selected employee has
     //a ratio of unassignedHours/contractHours that is above or below the average ratio
     //of all other employees
@@ -284,14 +298,17 @@ module.exports = {
         return this.staff[empIndex];
     },
 
+    //in use
     checkAvailability: function checkAvailability(candidate, shiftLength) {
         return (candidate.unassignedHours >= shiftLength);
     },
 
+    //in use
     adjustCandidateAvailability: function adjustCandidateAvailability(candidate, shiftLength) {
         candidate.unassignedHours -= shiftLength;
     },
 
+    //in use
     getCoverage: function getCoverage() {
         var calendar = this.calendar,
             dayInformation,

@@ -1,0 +1,7 @@
+No two shifts on the same day
+No adjacent L&D shifts
+No shift before or after L&D Night
+All employees get 2 weekend L&D shifts over 3 months
+
+Emps carry hours +/- from previous week of shifts
+Available emp with lowest assigned/contracted ratio takes shift
