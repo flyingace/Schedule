@@ -106,11 +106,11 @@ module.exports = {
         
         switch (dayName) {
             case 'Monday':
+            case 'Wednesday':
             case 'Thursday':
                 shiftRequirementArray = [true, true, true, true, true, false];
                 break;
             case 'Tuesday':
-            case 'Wednesday':
                 shiftRequirementArray = [true, true, true, true, false, false];
                 break;
             case 'Friday':
