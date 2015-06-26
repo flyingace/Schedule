@@ -49,6 +49,22 @@ function matchShiftAndEmployee() {
     EmployeeStore.assignShiftToEmployee(selectedShift);
 }
 
+function scheduleEmployees() {
+    var calendar = CalendarStore.getCalendarData(),
+        employees = EmployeeStore.getEmployeeData();
+
+    this.getCoverage(calendar, employees);
+}
+
+function getCoverage (calendar, employees) {
+
+
+}
+
+function scheduleWeekends(calendar, employees) {
+
+}
+
 // Extend ScheduleStore with EventEmitter to add eventing capabilities
 var ScheduleStore = _.extend({}, EventEmitter.prototype, {
 
