@@ -10,3 +10,14 @@ Spread out nights and weekends
 Some people like to have both shifts on the weekend
 Some people like two or three nights in a row
 Some people hate having two shifts in a row
+
+
+Current date format is 01May2015_LD for May 1, 2015, L&D Day Shift. Should this change?
+
+No two shifts on the same day
+No adjacent L&D shifts
+No shift before or after L&D Night
+    Does employee have a shift assigned that matches the date in the shift's shiftID
+    OR a shift that matches the date from the previous day's LN shift
+
+How do employee preferences play into this?
