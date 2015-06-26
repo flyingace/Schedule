@@ -10,24 +10,6 @@ module.exports = {
     assignedShifts: [],
     calendar: [],
 
-    //createEmployee: function createEmployee(empName, contractHours) {
-    //    return {
-    //        name: empName,
-    //        contractHours: contractHours,
-    //        unassignedHours: contractHours
-    //    };
-    //},
-
-    //createStaff: function createStaff(empJSON) {
-    //    for (var i = 0; i < empJSON.length; i++) {
-    //        this.addEmployeeToStaff(this.createEmployee(empJSON[i].name, empJSON[i].hours));
-    //    }
-    //},
-
-    //addEmployeeToStaff: function addEmployeeToStaff(employee) {
-    //    this.staff.push(employee);
-    //},
-
     //in use
     createShifts: function createShifts(dayInfo) {
         var shiftNameArray = dayInfo.shifts,
@@ -41,17 +23,6 @@ module.exports = {
 
         return dayOfShifts;
     },
-
-    //createShift: function createShift(shiftName, shiftDate) {
-    //    var shift = {};
-    //
-    //    shift.shiftName = shiftName;
-    //    shift.date = shiftDate;
-    //    shift.shiftLength = (shiftName.indexOf('L&D') < 0) ? 8 : 12;
-    //    shift.shiftAssignee = '';
-    //
-    //    return shift;
-    //},
 
     //in use
     /**
