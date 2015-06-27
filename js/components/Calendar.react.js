@@ -2,8 +2,9 @@
 
 /*globals */
 
-var React = require('react');
-var Month = require('./Month.react');
+var React = require('react'),
+    _ = require('lodash'),
+    Month = require('./Month.react');
 
 var Calendar = React.createClass({
 
@@ -23,15 +24,51 @@ var Calendar = React.createClass({
         return null;
     },
 
+    componentWillMount: function () {
+        console.log('will mount');
+        this.createMonthObjects(this.props.calendarData);
+    },
+
     componentDidMount: function () {
+        console.log(this.props);
     },
 
     componentWillUnmount: function () {
     },
 
+    createMonthObjects: function (calendarData, specData) {
+        var monthID = calendarData[0].dayID.slice(2),
+            monthName = monthID.slice(0, -4),
+            specialData = specData || [];
+
+        months = _.partition(calendarData, function (shift) {
+            return shift.dayID.slice(2, -4) === monthName;
+        }); //returns [[arrayA], [arrayB]]
+
+        specialData[specialData.length] = {MonthName: monthName, MonthID: monthID, Days_Shifts: months[0]};
+
+        console.log(specialData);
+        if (specialData.length > 5) {
+            return;
+        }
+
+        if (months[1].length !== 0) {
+            this.createMonthObjects(months[1], specialData);
+        } else {
+            this.props.revCalData = specialData;
+        }
+    },
+
+    /*
+    Take first item in array
+    Does it have the same monthName as monthName?
+    Yes: Add it to the matching monthName array
+    No: Create a new monthname array for the new monthname
+     */
+
     render: function () {
 
-        if (!this.props.calendarData.length) {
+        if (!this.props.revCalData.length) {
             return (
                 <div className = "calendar">
                     No calendar yet!
@@ -42,9 +79,9 @@ var Calendar = React.createClass({
         return (
             <div className = "calendar">
                 {
-                    this.props.calendarData.map(function (month, index) {
+                    this.props.revCalData.map(function (month, index) {
                         return (
-                            <Month monthName = {month.MonthName} monthID = {month.monthID} key = {index} days = {month.Days} />
+                            <Month monthName = {month.MonthName} monthID = {month.monthID} key = {index} days = {month.Days_Shifts} />
                         )
                     })
                 }
