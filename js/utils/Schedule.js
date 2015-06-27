@@ -2,7 +2,8 @@
 
 /*globals */
 
-var moment = require('moment');
+var moment = require('moment'),
+    _ = require('lodash');
 
 module.exports = {
 
@@ -10,21 +11,6 @@ module.exports = {
     assignedShifts: [],
     calendar: [],
 
-    //in use
-    createShifts: function createShifts(dayInfo) {
-        var shiftNameArray = dayInfo.shifts,
-            shiftDate = dayInfo.date,
-            dayOfShifts = [];
-
-        for (var i = 0; i < shiftNameArray.length; i++) {
-            var newShift = this.createShift(shiftNameArray[i], shiftDate);
-            dayOfShifts.push(newShift);
-        }
-
-        return dayOfShifts;
-    },
-
-    //in use
     /**
      * Create array of consecutive dates starting with startDate and
      * ending with endDate in the format 'dddd, MMMM D YYYY' (eg, 'Sunday, May 10, 2015')
@@ -39,195 +25,92 @@ module.exports = {
         var firstDate = moment(startDate),
             lastDate = moment(endDate),
             dateInRange = firstDate,
-            calendarJSON = [],
+            shiftsArray = [],
+            shiftArray,
             formattedDate,
-            currentMonth = '',
-            monthObj = {},
-            dayObj,
+            shiftsForDay,
             dayDate;
 
         //check if the date comes after the lastDate, so lastDate is included in the array
         while (!dateInRange.isAfter(lastDate)) {
-            //calendar.push(dateInRange.format('dddd, MMMM D YYYY'));
-            //dateInRange.add(1, 'days');
+
             formattedDate = dateInRange.format('dddd, MMMM, DD, YYYY').split(', ');
 
             dayDate = parseInt(formattedDate[2], 10);
-            dayObj = this.getDayObject(formattedDate, dayDate);
 
-            if (formattedDate[1] !== currentMonth) {
-                currentMonth = formattedDate[1];
-                monthObj = {
-                    MonthName: currentMonth,
-                    MonthID: formattedDate[1] + formattedDate[3],
-                    Days: []
-                };
-                calendarJSON.push(monthObj);
-            }
-            calendarJSON[calendarJSON.length - 1].Days.push(dayObj);
+            //TODO: Seems like passing the formatted date and the dayDate is redundant
+            shiftsForDay = this.getShiftsForDay(formattedDate, dayDate);
+
+            shiftsArray.push(shiftsForDay);
 
             dateInRange.add(1, 'days');
         }
 
-        return calendarJSON;
+        shiftArray = _.flatten(shiftsArray);
+
+        return shiftArray;
     },
-    
-    getShiftRequirements: function getShiftRequirements(dayName) {
-        var shiftRequirementArray = [];
-        
+
+    getShiftsForDay: function getShiftsForDay(formattedDate, dayDate) {
+        var dayName = formattedDate[0],
+            dayID = formattedDate[2] + formattedDate[1] + formattedDate[3],
+            shiftNames = this.getShiftNamesByDayOfWeek(dayName),
+            shiftsForDay = [],
+            shiftData;
+
+        for (var i = 0; i < shiftNames.length; i++) {
+            switch (shiftNames[i]) {
+                case 'L&D Day':
+                    shiftData = {shiftName: shiftNames[i], shiftLength: 12, shiftIDSuffix: '_LD'};
+                    break;
+                case 'L&D Night':
+                    shiftData = {shiftName: shiftNames[i], shiftLength: 12, shiftIDSuffix: '_LN'};
+                    break;
+                case 'Clinic 1':
+                    shiftData = {shiftName: shiftNames[i], shiftLength: 8, shiftIDSuffix: '_C1'};
+                    break;
+                case 'Clinic 2':
+                    shiftData = {shiftName: shiftNames[i], shiftLength: 8, shiftIDSuffix: '_C2'};
+                    break;
+                case 'High Risk':
+                    shiftData = {shiftName: shiftNames[i], shiftLength: 8, shiftIDSuffix: '_HR'};
+                    break;
+                case 'Friday Coverage':
+                    shiftData = {shiftName: shiftNames[i], shiftLength: 4, shiftIDSuffix: '_FC'};
+                    break;
+                default:
+                    console.log('Houston, we have a problem.');
+                    break;
+            }
+
+            _.assign(shiftData, {dayDate: dayDate, dayName: dayName, dayID: dayID});
+
+            shiftsForDay.push(this.generateShiftObject(shiftData));
+        }
+
+        return shiftsForDay;
+    },
+
+    getShiftNamesByDayOfWeek: function getShiftNamesByDayOfWeek(dayName) {
+        var LD = 'L&D Day', LN = 'L&D Night', C1 = 'Clinic 1', C2 = 'Clinic 2', HR = 'High Risk',
+            FC = 'Friday Coverage',
+            shiftsForDay;
+
         switch (dayName) {
             case 'Monday':
             case 'Wednesday':
             case 'Thursday':
-                shiftRequirementArray = [true, true, true, true, true, false];
+                shiftsForDay = [LD, LN, C1, C2, HR];
                 break;
             case 'Tuesday':
-                shiftRequirementArray = [true, true, true, true, false, false];
+                shiftsForDay = [LD, LN, C1, C2];
                 break;
             case 'Friday':
-                shiftRequirementArray = [true, true, true, true, false, true];
+                shiftsForDay = [LD, LN, C1, C2, FC];
                 break;
             case 'Saturday':
             case 'Sunday':
-                shiftRequirementArray = [true, true, false, false, false, false];
-                break;
-            default:
-                break;
-        }
-
-        return shiftRequirementArray;
-    },
-
-    //in use
-    getDayObject: function getDayObject(formattedDate, dayDate) {
-        var dayName = formattedDate[0],
-            dayID = formattedDate[2] + formattedDate[1] + formattedDate[3],
-            shiftRequirementArray = [];
-
-
-        return {
-            DayDate: dayDate,
-            DayName: dayName,
-            DayID: dayID,
-            Shifts: [
-                {
-                    shiftName: 'L&D Day',
-                    required: this.getShiftRequirements(dayName)[0],
-                    shiftAssignee: {
-                        employeeName: 'Unassigned',
-                        employeeID: 'unassigned',
-                        committedHours: 0,
-                        assignedHours: 0,
-                        assignedShifts: []
-                    },
-                    shiftAssigneeName: 'Unassigned',
-                    shiftAssigneeID: 'unassigned',
-                    shiftLength: 12,
-                    shiftID: dayID + '_LD',
-                    selected: false
-                },
-                {
-                    shiftName: 'L&D Night',
-                    required: this.getShiftRequirements(dayName)[1],
-                    shiftAssignee: {
-                        employeeName: 'Unassigned',
-                        employeeID: 'unassigned',
-                        committedHours: 0,
-                        assignedHours: 0,
-                        assignedShifts: []
-                    },
-                    shiftAssigneeName: 'Unassigned',
-                    shiftAssigneeID: 'unassigned',
-                    shiftLength: 12,
-                    shiftID: dayID + '_LN',
-                    selected: false
-                },
-                {
-                    shiftName: 'Clinic 1',
-                    required: this.getShiftRequirements(dayName)[2],
-                    shiftAssignee: {
-                        employeeName: 'Unassigned',
-                        employeeID: 'unassigned',
-                        committedHours: 0,
-                        assignedHours: 0,
-                        assignedShifts: []
-                    },
-                    shiftAssigneeName: 'Unassigned',
-                    shiftAssigneeID: 'unassigned',
-                    shiftLength: 8,
-                    shiftID: dayID + '_C1',
-                    selected: false
-                },
-                {
-                    shiftName: 'Clinic 2',
-                    required: this.getShiftRequirements(dayName)[3],
-                    shiftAssignee: {
-                        employeeName: 'Unassigned',
-                        employeeID: 'unassigned',
-                        committedHours: 0,
-                        assignedHours: 0,
-                        assignedShifts: []
-                    },
-                    shiftAssigneeName: 'Unassigned',
-                    shiftAssigneeID: 'unassigned',
-                    shiftLength: 8,
-                    shiftID: dayID + '_C2',
-                    selected: false
-                },
-                {
-                    shiftName: 'High Risk',
-                    required: this.getShiftRequirements(dayName)[4],
-                    shiftAssignee: {
-                        employeeName: 'Unassigned',
-                        employeeID: 'unassigned',
-                        committedHours: 0,
-                        assignedHours: 0,
-                        assignedShifts: []
-                    },
-                    shiftAssigneeName: 'Unassigned',
-                    shiftAssigneeID: 'unassigned',
-                    shiftLength: 8,
-                    shiftID: dayID + '_HR',
-                    selected: false
-                },
-                {
-                    shiftName: 'Friday Coverage',
-                    required: this.getShiftRequirements(dayName)[5],
-                    shiftAssignee: {
-                        employeeName: 'Unassigned',
-                        employeeID: 'unassigned',
-                        committedHours: 0,
-                        assignedHours: 0,
-                        assignedShifts: []
-                    },
-                    shiftAssigneeName: 'Unassigned',
-                    shiftAssigneeID: 'unassigned',
-                    shiftLength: 4,
-                    shiftID: dayID + '_FC',
-                    selected: false
-                }
-            ]
-        };
-    },
-
-    //in use
-    getShifts: function getShifts(day) {
-        var dayAndDate = day.split(', '),
-            shiftsForDay = {date: dayAndDate[1]};
-
-        switch (dayAndDate[0]) {
-            case 'Monday':
-            case 'Thursday':
-                shiftsForDay.shifts = ['L&DDay', 'L&DNight', 'Clinic', 'HiRisk'];
-                break;
-            case 'Tuesday':
-            case 'Wednesday':
-            case 'Friday':
-                shiftsForDay.shifts = ['L&DDay', 'L&DNight', 'Clinic'];
-                break;
-            case 'Saturday':
-            case 'Sunday':
-                shiftsForDay.shifts = ['L&DDay', 'L&DNight'];
+                shiftsForDay = [LD, LN];
                 break;
             default:
                 break;
@@ -236,64 +119,107 @@ module.exports = {
         return shiftsForDay;
     },
 
-    //in use
-    assignShift: function assignShift(shift) {
-        var candidate;
-
-        while (shift.shiftAssignee === '') {
-            candidate = this.chooseRandomEmployee();
-            var candidateIsAvailable = this.checkAvailability(candidate, shift.length);
-
-            if (candidateIsAvailable) {
-                this.adjustCandidateAvailability(candidate, shift.length);
-                shift.shiftAssignee = candidate.name;
-            }
-        }
-    },
-
-    //in use
-    assignShifts: function assignShifts(shiftsForDay) {
-
-        for (var i = 0; i < shiftsForDay.length; i++) {
-            this.assignShift(shiftsForDay[i]);
-        }
-    },
-
-    //in use
-    //TODO: Maybe add something to this that checks whether the selected employee has
-    //a ratio of unassignedHours/contractHours that is above or below the average ratio
-    //of all other employees
-    chooseRandomEmployee: function chooseRandomEmployee() {
-        var empIndex = Math.floor(Math.random() * this.staff.length);
-
-        return this.staff[empIndex];
-    },
-
-    //in use
-    checkAvailability: function checkAvailability(candidate, shiftLength) {
-        return (candidate.unassignedHours >= shiftLength);
-    },
-
-    //in use
-    adjustCandidateAvailability: function adjustCandidateAvailability(candidate, shiftLength) {
-        candidate.unassignedHours -= shiftLength;
-    },
-
-    //in use
-    getCoverage: function getCoverage() {
-        var calendar = this.calendar,
-            dayInformation,
-            dayOfShifts = [];
-
-        for (var i = 0; i < calendar.length; i++) {
-            dayInformation = this.getShifts(calendar[i]);
-            dayOfShifts = this.createShifts(dayInformation);
-            this.assignShifts(dayOfShifts);
-            this.assignedShifts.push(dayOfShifts);
-        }
-
-        console.log(JSON.stringify(this.assignedShifts));
+    //TODO: Ultimately how many of these properties are needed? Can shiftAssigneeName, for example,
+    //be gotten as shiftAssignee.employeeName? Also, seems like there are a lot of dates and IDs that come from dates.
+    generateShiftObject: function generateShiftObject(shift) {
+        return {
+            dayDate: shift.dayDate,
+            dayName: shift.dayName,
+            dayID: shift.dayID,
+            shiftName: shift.shiftName,
+            shiftAssignee: {
+                employeeName: 'Unassigned',
+                employeeID: 'unassigned',
+                committedHours: 0,
+                assignedHours: 0,
+                assignedShifts: []
+            },
+            shiftAssigneeName: 'Unassigned',
+            shiftAssigneeID: 'unassigned',
+            shiftLength: shift.shiftLength,
+            shiftID: shift.dayID + shift.shiftIDSuffix,
+            selected: false
+        };
     }
+
+    /*
+     The following functions are part of legacy code used in randomly assigning unassigned shifts
+     I am leaving these in here for the time being in case they are needed to provide insight
+     into how to go about building out this functionality, though I am doubtful that they will :)
+
+     //in use
+     assignShift: function assignShift(shift) {
+     var candidate;
+
+     while (shift.shiftAssignee === '') {
+     candidate = this.chooseRandomEmployee();
+     var candidateIsAvailable = this.checkAvailability(candidate, shift.length);
+
+     if (candidateIsAvailable) {
+     this.adjustCandidateAvailability(candidate, shift.length);
+     shift.shiftAssignee = candidate.name;
+     }
+     }
+     },
+
+     //in use
+     assignShifts: function assignShifts(shiftsForDay) {
+
+     for (var i = 0; i < shiftsForDay.length; i++) {
+     this.assignShift(shiftsForDay[i]);
+     }
+     },
+
+     //in use
+     createShifts: function createShifts(dayInfo) {
+     var shiftNameArray = dayInfo.shifts,
+     shiftDate = dayInfo.date,
+     dayOfShifts = [];
+
+     for (var i = 0; i < shiftNameArray.length; i++) {
+     var newShift = this.createShift(shiftNameArray[i], shiftDate);
+     dayOfShifts.push(newShift);
+     }
+
+     return dayOfShifts;
+     },
+
+     //in use
+     //TODO: Maybe add something to this that checks whether the selected employee has
+     //a ratio of unassignedHours/contractHours that is above or below the average ratio
+     //of all other employees
+     chooseRandomEmployee: function chooseRandomEmployee() {
+     var empIndex = Math.floor(Math.random() * this.staff.length);
+
+     return this.staff[empIndex];
+     },
+
+     //in use
+     checkAvailability: function checkAvailability(candidate, shiftLength) {
+     return (candidate.unassignedHours >= shiftLength);
+     },
+
+     //in use
+     adjustCandidateAvailability: function adjustCandidateAvailability(candidate, shiftLength) {
+     candidate.unassignedHours -= shiftLength;
+     },
+
+     //in use
+     getCoverage: function getCoverage() {
+     var calendar = this.calendar,
+     dayInformation,
+     dayOfShifts = [];
+
+     for (var i = 0; i < calendar.length; i++) {
+     dayInformation = this.getShifts(calendar[i]);
+     dayOfShifts = this.createShifts(dayInformation);
+     this.assignShifts(dayOfShifts);
+     this.assignedShifts.push(dayOfShifts);
+     }
+
+     console.log(JSON.stringify(this.assignedShifts));
+     }
+     */
 
     //return {
     //    //createEmployee: createEmployee,
