@@ -41,12 +41,6 @@ var Shift = React.createClass({
     componentDidMount: function () {
     },
 
-    render: function () {
-        return (
-            <div className = {this.setClassesFromProps()} data-id = {this.props.shiftID} onClick = {this.onShiftClick}>{this.props.shiftName}: {this.props.shiftAssigneeName}</div>
-        );
-    },
-
     getClassNameFromID: function (shiftID) {
         return " " + shiftID.substr(-2).toLowerCase();
     },
@@ -72,6 +66,13 @@ var Shift = React.createClass({
         }
 
         return className;
+    },
+
+    render: function () {
+        return (
+            <div className = {this.setClassesFromProps()} data-id = {this.props.shiftID}
+                 onClick = {this.onShiftClick}>{this.props.shiftName}: {this.props.shiftAssigneeName}</div>
+        );
     }
 });
 

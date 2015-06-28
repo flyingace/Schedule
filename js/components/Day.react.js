@@ -26,13 +26,11 @@ var Day = React.createClass({
                 <h2>{this.props.dayName} {this.props.dayDate}</h2>
                 {
                     this.props.shifts.map(function (shiftSet, index) {
-                        if (shiftSet.required) {
                             return (
                                 <Shift shiftName = {shiftSet.shiftName} shiftID = {shiftSet.shiftID}
                                        shiftSelected = {shiftSet.selected} shiftAssignee = {shiftSet.shiftAssignee}
                                        shiftAssigneeName = {shiftSet.shiftAssigneeName} key = {index}/>
                             )
-                        }
                     })
                 }
             </div>

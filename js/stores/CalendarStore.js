@@ -15,24 +15,18 @@ function loadCalendarData(data) {
 }
 
 function _setSelectedShift(shiftID) {
-    var _days, _shifts, _shift;
+    var _shift;
 
     _unsetSelectedShift();
 
     if (shiftID) {
         for (var i = 0; i < _calendarData.length; i++) {
-            _days = _calendarData[i].Days;
-            for (var j = 0; j < _days.length; j++) {
-                _shifts = _days[j].Shifts;
-                for (var k = 0; k < _shifts.length; k++) {
-                    _shift = _shifts[k];
-                    if (_shift.shiftID === shiftID) {
-                        _shift.selected = true;
+            _shift = _calendarData[i];
+            if (_shift.shiftID === shiftID) {
+                _shift.selected = true;
 
-                        _selectedShift = _shift;
-                        return;
-                    }
-                }
+                _selectedShift = _shift;
+                return;
             }
         }
     }
