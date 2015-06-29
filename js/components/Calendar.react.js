@@ -25,14 +25,14 @@ var Calendar = React.createClass({
     },
 
     componentWillMount: function () {
-        this.createMonthObjects(this.props.calendarData);
+        //this.createMonthObjects(this.props.calendarData);
     },
 
     componentDidMount: function () {
     },
 
     componentWillReceiveProps: function (newProps) {
-        this.createMonthObjects(newProps.calendarData);
+        //this.createMonthObjects(newProps.calendarData);
     },
 
     componentWillUnmount: function () {
@@ -56,14 +56,15 @@ var Calendar = React.createClass({
 
         if (months[1].length !== 0) {
             this.createMonthObjects(months[1], specialData);
-        } else {
-            this.props.monthData = specialData;
         }
+
+        return specialData;
     },
 
     render: function () {
 
-        if (!this.props.monthData.length) {
+        var monthData;
+        if (!this.props.calendarData.length) {
             return (
                 <div className = "calendar">
                     No calendar yet!
@@ -71,10 +72,12 @@ var Calendar = React.createClass({
             )
         }
 
+        monthData = this.createMonthObjects(this.props.calendarData);
+
         return (
             <div className = "calendar">
                 {
-                    this.props.monthData.map(function (month, index) {
+                    monthData.map(function (month, index) {
                         return (
                             <Month monthName = {month.MonthName} monthID = {month.monthID} key = {index} days = {month.Days_Shifts} />
                         )
