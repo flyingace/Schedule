@@ -21,18 +21,17 @@ var Calendar = React.createClass({
     },
 
     getInitialState: function () {
-        return null;
+        return this.createMonthObjects(this.props.calendarData);
     },
 
     componentWillMount: function () {
-        this.createMonthObjects(this.props.calendarData);
     },
 
     componentDidMount: function () {
     },
 
-    componentWillReceiveProps: function (newProps) {
-        this.createMonthObjects(newProps.calendarData);
+    componentWillReceiveProps: function () {
+        return this.createMonthObjects(this.props.calendarData);
     },
 
     componentWillUnmount: function () {
@@ -42,6 +41,7 @@ var Calendar = React.createClass({
         var monthID = calendarData[0].dayID.slice(2),
             monthName = monthID.slice(0, -4),
             specialData = specData || [],
+            oobj = {},
             months;
 
         months = _.partition(calendarData, function (shift) {
@@ -56,14 +56,18 @@ var Calendar = React.createClass({
 
         if (months[1].length !== 0) {
             this.createMonthObjects(months[1], specialData);
+            return;
         } else {
-            this.props.monthData = specialData;
+            oobj.monthData = specialData;
         }
+
+        return oobj;
+
     },
 
     render: function () {
 
-        if (!this.props.monthData.length) {
+        if (!this.state.monthData.length) {
             return (
                 <div className = "calendar">
                     No calendar yet!
@@ -74,7 +78,7 @@ var Calendar = React.createClass({
         return (
             <div className = "calendar">
                 {
-                    this.props.monthData.map(function (month, index) {
+                    this.state.monthData.map(function (month, index) {
                         return (
                             <Month monthName = {month.MonthName} monthID = {month.monthID} key = {index} days = {month.Days_Shifts} />
                         )
@@ -84,5 +88,12 @@ var Calendar = React.createClass({
         );
     }
 });
+
+
+//{ first: 'Christian' };
+//
+//this.setState({ last: [{
+//
+//}] });
 
 module.exports = Calendar;
