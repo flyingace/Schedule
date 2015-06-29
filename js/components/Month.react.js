@@ -21,11 +21,11 @@ var Month = React.createClass({
     },
 
     componentWillMount: function () {
-        this.createDayObjects(this.props.days);
+        //this.createDayObjects(this.props.days);
     },
 
     componentWillReceiveProps: function (newProps) {
-        this.createDayObjects(newProps.days);
+        //this.createDayObjects(newProps.days);
     },
 
     createDayObjects: function (dayData, reshaped_data) {
@@ -47,17 +47,20 @@ var Month = React.createClass({
 
         if (days[1].length !== 0) {
             this.createDayObjects(days[1], reshapedData);
-        } else {
-            this.props.dayData = reshapedData;
         }
+
+        return reshapedData;
+
     },
 
     render: function () {
+        var dayData = this.createDayObjects(this.props.days);
+
         return (
             <div className = 'month' data-id = {this.props.monthID}>
                 <h1>{this.props.monthName}</h1>
                 {
-                    this.props.dayData.map(function (day, index) {
+                    dayData.map(function (day, index) {
                         return (
                             <Day dayName = {day.DayName} dayDate = {day.DayDate} dayID = {day.DayID} key = {index} shifts = {day.Shifts}/>
                         )
