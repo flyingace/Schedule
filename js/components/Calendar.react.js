@@ -6,6 +6,33 @@ var React = require('react'),
     _ = require('lodash'),
     Month = require('./Month.react');
 
+function createMonthObjects(calendarData) {
+    var monthName, monthID,
+        reshapedMonthData = [],
+        months = [],
+        calData = calendarData;
+
+    while (!months[1] || months[1].length !== 0) {
+
+        monthName = calData[0].monthName;
+        monthID = calData[0].monthID;
+
+        months = partitionDataByMonth(calData, monthID);
+
+        reshapedMonthData[reshapedMonthData.length] = {MonthName: monthName, MonthID: monthID, Days_Shifts: months[0]};
+
+        calData = months[1];
+    }
+
+    return {monthData: reshapedMonthData};
+}
+
+function partitionDataByMonth(calData, monthID) {
+    return _.partition(calData, function (shift) {
+        return shift.monthID === monthID;
+    }); //returns [[arrayA], [arrayB]]
+}
+
 var Calendar = React.createClass({
 
     displayName: 'Calendar',
@@ -21,50 +48,25 @@ var Calendar = React.createClass({
     },
 
     getInitialState: function () {
-        return null;
+        return createMonthObjects(this.props.calendarData);
     },
 
     componentWillMount: function () {
-        //this.createMonthObjects(this.props.calendarData);
     },
 
     componentDidMount: function () {
     },
 
-    componentWillReceiveProps: function (newProps) {
-        //this.createMonthObjects(newProps.calendarData);
+    componentWillReceiveProps: function (nextProps) {
+        return createMonthObjects(nextProps.calendarData);
     },
 
     componentWillUnmount: function () {
     },
 
-    createMonthObjects: function (calendarData, specData) {
-        var monthID = calendarData[0].dayID.slice(2),
-            monthName = monthID.slice(0, -4),
-            specialData = specData || [],
-            months;
-
-        months = _.partition(calendarData, function (shift) {
-            return shift.dayID.slice(2, -4) === monthName;
-        }); //returns [[arrayA], [arrayB]]
-
-        specialData[specialData.length] = {MonthName: monthName, MonthID: monthID, Days_Shifts: months[0]};
-
-        if (specialData.length > 5) {
-            return;
-        }
-
-        if (months[1].length !== 0) {
-            this.createMonthObjects(months[1], specialData);
-        }
-
-        return specialData;
-    },
-
     render: function () {
 
-        var monthData;
-        if (!this.props.calendarData.length) {
+        if (!this.state.monthData.length) {
             return (
                 <div className = "calendar">
                     No calendar yet!
@@ -72,14 +74,13 @@ var Calendar = React.createClass({
             )
         }
 
-        monthData = this.createMonthObjects(this.props.calendarData);
-
         return (
             <div className = "calendar">
                 {
-                    monthData.map(function (month, index) {
+                    this.state.monthData.map(function (month, index) {
                         return (
-                            <Month monthName = {month.MonthName} monthID = {month.monthID} key = {index} days = {month.Days_Shifts} />
+                            <Month monthName = {month.MonthName} monthID = {month.MonthID} key = {index}
+                                   days = {month.Days_Shifts}/>
                         )
                     })
                 }
