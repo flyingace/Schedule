@@ -52,8 +52,10 @@ module.exports = {
     },
 
     getShiftsForDay: function getShiftsForDay(formattedDate, dayDate) {
-        var dayName = formattedDate[0],
-            dayID = formattedDate[2] + formattedDate[1] + formattedDate[3],
+        var monthName = formattedDate[1],
+            monthID = monthName + formattedDate[3],
+            dayName = formattedDate[0],
+            dayID = formattedDate[2] + monthID,
             shiftNames = this.getShiftNamesByDayOfWeek(dayName),
             shiftsForDay = [],
             shiftData;
@@ -83,7 +85,7 @@ module.exports = {
                     break;
             }
 
-            _.assign(shiftData, {dayDate: dayDate, dayName: dayName, dayID: dayID});
+            _.assign(shiftData, {monthName: monthName, monthID: monthID, dayName: dayName, dayID: dayID, dayDate: dayDate});
 
             shiftsForDay.push(this.generateShiftObject(shiftData));
         }
@@ -123,9 +125,11 @@ module.exports = {
     //be gotten as shiftAssignee.employeeName? Also, seems like there are a lot of dates and IDs that come from dates.
     generateShiftObject: function generateShiftObject(shift) {
         return {
-            dayDate: shift.dayDate,
+            monthName: shift.monthName,
+            monthID: shift.monthID,
             dayName: shift.dayName,
             dayID: shift.dayID,
+            dayDate: shift.dayDate,
             shiftName: shift.shiftName,
             shiftAssignee: {
                 employeeName: 'Unassigned',
