@@ -12,6 +12,7 @@ module.exports = {
                     committedHours: 32,
                     assignedHours: 32,
                     assignedShifts: [],
+                    available: true,
                     commitment: 0.8
                 },
                 {
@@ -20,6 +21,7 @@ module.exports = {
                     committedHours: 20,
                     assignedHours: 20,
                     assignedShifts: [],
+                    available: true,
                     commitment: 0.5
                 },
                 {
@@ -28,6 +30,7 @@ module.exports = {
                     committedHours: 24,
                     assignedHours: 24,
                     assignedShifts: [],
+                    available: true,
                     commitment: 0.6
                 },
                 {
@@ -36,6 +39,7 @@ module.exports = {
                     committedHours: 20,
                     assignedHours: 20,
                     assignedShifts: [],
+                    available: true,
                     commitment: 0.5
                 },
                 {
@@ -44,6 +48,7 @@ module.exports = {
                     committedHours: 40,
                     assignedHours: 40,
                     assignedShifts: [],
+                    available: true,
                     commitment: 1
                 },
                 {
@@ -52,6 +57,7 @@ module.exports = {
                     committedHours: 40,
                     assignedHours: 40,
                     assignedShifts: [],
+                    available: true,
                     commitment: 1
                 },
                 {
@@ -60,6 +66,7 @@ module.exports = {
                     committedHours: 40,
                     assignedHours: 40,
                     assignedShifts: [],
+                    available: true,
                     commitment: 1
                 },
                 {
@@ -68,6 +75,7 @@ module.exports = {
                     committedHours: 40,
                     assignedHours: 40,
                     assignedShifts: [],
+                    available: true,
                     commitment: 1
                 },
                 {
@@ -76,6 +84,7 @@ module.exports = {
                     committedHours: 40,
                     assignedHours: 40,
                     assignedShifts: [],
+                    available: true,
                     commitment: 1
                 },
                 {
@@ -84,6 +93,7 @@ module.exports = {
                     committedHours: 20,
                     assignedHours: 20,
                     assignedShifts: [],
+                    available: true,
                     commitment: 0.5
                 },
                 {
@@ -92,6 +102,7 @@ module.exports = {
                     committedHours: 0,
                     assignedHours: 0,
                     assignedShifts: [],
+                    available: true,
                     commitment: 0
                 }
             ]

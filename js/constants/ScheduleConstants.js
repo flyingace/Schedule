@@ -12,6 +12,7 @@ module.exports = keyMirror({
     UPDATE_EMPLOYEE_SELECTION: null,    // Update selection of Employee selected for assignment
     UPDATE_LIST_VISIBILITY: null,       // Toggle visibility of list of available Employees
     UPDATE_EMPLOYEE_ASSIGNMENT: null,   // Assign Employee to Shift
+    UPDATE_EMPLOYEE_AVAILABILITY: null, // Update Employee's availability for shift assignment
     SHIFT_ASSIGN: null,                 // Assign Shift to Employee
     SHIFT_UNASSIGN: null                // Unassign Shift from Employee
 });

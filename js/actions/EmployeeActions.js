@@ -16,7 +16,6 @@ var EmployeeActions = {
         });
     },
 
-
     // Assign Shift to Employee
     setAssignedEmployee: function (employeeID) {
         ScheduleDispatcher.handleAction({
@@ -48,6 +47,14 @@ var EmployeeActions = {
             actionType: ScheduleConstants.UPDATE_LIST_VISIBILITY,
             empListIsVisible: empListIsVisible,
             targetShift: targetShift
+        });
+    },
+
+    // Update availability for selected shift
+    updateAvailability: function (shiftID) {
+        ScheduleDispatcher.handleAction({
+            actionType: ScheduleConstants.UPDATE_EMPLOYEE_AVAILABILITY,
+            shiftID: shiftID
         });
     }
 };

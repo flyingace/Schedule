@@ -9,7 +9,6 @@ var React = require('react'),
     EmployeeListItem = require('./EmployeeListItem.react'),
     CalendarActions = require('../actions/CalendarActions');
 
-
 var EmployeeList = React.createClass({
 
     displayName: EmployeeList,
@@ -49,24 +48,25 @@ var EmployeeList = React.createClass({
         CalendarActions.setSelectedShift(null);
     },
 
-
     render: function () {
         var listPosition = {top: this.props.empListStatus.topPos, left: this.props.empListStatus.leftPos};
 
-        if (!this.props.employeeData.length)
-        {
+        if (!this.props.employeeData.length) {
             return (
                 <div>Calendar data loading...</div>
             );
         }
 
         return (
-            <ul className = {'employee-list ' + (this.props.empListStatus.isVisible ? 'visible' : '')} style = {listPosition} >
+            <ul className = {'employee-list ' + (this.props.empListStatus.isVisible ? 'visible' : '')}
+                style = {listPosition}>
                 <li className = "employee close">x</li>
                 {
                     this.props.employeeData.map(function (employee, index) {
                         return (
-                            <EmployeeListItem key = {index} employeeName = {employee.employeeName} employeeID = {employee.employeeID} committedHours = {employee.committedHours}
+                            <EmployeeListItem key = {index} employeeName = {employee.employeeName}
+                                              employeeID = {employee.employeeID}
+                                              committedHours = {employee.committedHours}
                                               assignedHours = {employee.assignedHours}/>
                         )
                     })

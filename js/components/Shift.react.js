@@ -4,8 +4,7 @@
 
 var React = require('react'),
     CalendarActions = require('../actions/CalendarActions'),
-    EmployeeActions = require('../actions/EmployeeActions'),
-    $ = require('jquery');
+    EmployeeActions = require('../actions/EmployeeActions');
 
 var Shift = React.createClass({
 
@@ -46,9 +45,10 @@ var Shift = React.createClass({
     },
 
     onShiftClick: function (evt) {
-        var targetShift = $(evt.currentTarget);
+        var targetShift = evt.currentTarget;
 
         CalendarActions.setSelectedShift(this.props.shiftID);
+        EmployeeActions.updateAvailability(this.props.shiftID);
         EmployeeActions.updateListStatus(true, targetShift);
     },
 

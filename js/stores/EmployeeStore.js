@@ -3,6 +3,7 @@
 /*globals */
 
 var _ = require('lodash');
+var moment = require('moment');
 var ScheduleDispatcher = require('../dispatcher/ScheduleDispatcher');
 var ScheduleConstants = require('../constants/ScheduleConstants');
 var EventEmitter = require('events').EventEmitter;
@@ -10,7 +11,7 @@ var EventEmitter = require('events').EventEmitter;
 // Define initial data points
 var _employeeData = {}, _selectedEmployee = {}, _empListVisible = false;
 
-function loadEmployeeData(data) {
+function _loadEmployeeData(data) {
     _employeeData = data;
 }
 
@@ -29,6 +30,37 @@ function setSelectedEmployee(employeeID) {
 
 function _unsetSelectedEmployee() {
     _selectedEmployee = {};
+}
+
+function setEmployeeAvailability(selectedShiftID) {
+    for (var i = 0; i < _employeeData.length; i++) {
+
+        var shiftsAssigned = _employeeData[i].assignedShifts,
+            isAvailable = checkScheduleConflict(selectedShiftID, shiftsAssigned);
+
+        _employeeData[i].available = isAvailable;
+    }
+}
+
+//TODO: Fix this so consecutive night shifts are possible.
+//TODO: Create method that resets all availability once a selection has been made
+function checkScheduleConflict(shiftID, shifts) {
+    var date = shiftID.slice(0,-3),
+        dayAfter = moment(date).add(1, 'days').format('DDMMMMYYYY'),
+        shiftsString = shifts.toString(),
+        isAvailable = true;
+
+    //checks conflict with other shifts on same day
+    if (shiftsString.indexOf(date) !== -1) {
+        isAvailable = false;
+    }
+
+    //checks conflict with night shift night before
+    if (shiftID.indexOf('_LN') !== -1 && shiftsString.indexOf(dayAfter) !== -1) {
+        isAvailable = false;
+    }
+
+    return isAvailable;
 }
 
 function _assignShiftToEmployee(shift) {
@@ -88,7 +120,7 @@ ScheduleDispatcher.register(function (payload) {
 
             // Respond to RECEIVE_DATA action
             case ScheduleConstants.RECEIVE_EMPLOYEE_DATA:
-                loadEmployeeData(action.data);
+                _loadEmployeeData(action.data);
                 break;
 
             case ScheduleConstants.UPDATE_EMPLOYEE_SELECTION:
@@ -98,6 +130,10 @@ ScheduleDispatcher.register(function (payload) {
             // Respond to SHIFT_UNASSIGN action
             case ScheduleConstants.SHIFT_UNASSIGN:
                 unassignShiftToEmployee(action.data);
+                break;
+
+            case ScheduleConstants.UPDATE_EMPLOYEE_AVAILABILITY:
+                setEmployeeAvailability(action.shiftID);
                 break;
 
             default:

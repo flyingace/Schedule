@@ -26,14 +26,14 @@ function setEmpListStatus(empListIsVisible, targetShift) {
     _empListStatus.leftPos = empListPosition.leftPos;
 }
 
-function getEmpListPosition($targetShift) {
+function getEmpListPosition(targetShift) {
     var listPosition = {topPos: 0, leftPos: 0},
-        shiftWidth, shiftHeight, shiftPosition, topPos, leftPos;
+        shiftHeight;
 
-    if ($targetShift) {
-        shiftWidth = $targetShift.width();
+    if (targetShift) {
+        var $targetShift = $(targetShift);
         shiftHeight = $targetShift.height();
-        listPosition.leftPos = $targetShift.position().left; // + shiftWidth;
+        listPosition.leftPos = $targetShift.position().left;
         listPosition.topPos = $targetShift.position().top + shiftHeight;
     }
 
