@@ -42,21 +42,36 @@ function setEmployeeAvailability(selectedShiftID) {
     }
 }
 
-//TODO: Fix this so consecutive night shifts are possible.
-//TODO: Create method that resets all availability once a selection has been made
 function checkScheduleConflict(shiftID, shifts) {
-    var date = shiftID.slice(0,-3),
-        dayAfter = moment(date).add(1, 'days').format('DDMMMMYYYY'),
+    var dayOfShift = shiftID.slice(0, -3),
+        dayAfter = moment(dayOfShift, 'DDMMMMYYYY').add(1, 'days').format('DDMMMMYYYY'),
+        dayBefore = moment(dayOfShift, 'DDMMMMYYYY').subtract(1, 'days').format('DDMMMMYYYY'),
         shiftsString = shifts.toString(),
-        isAvailable = true;
+        isAvailable = true,
 
-    //checks conflict with other shifts on same day
-    if (shiftsString.indexOf(date) !== -1) {
+        hasShiftOnSameDay = _.contains(shiftsString, dayOfShift),
+        hasConflictingShiftOnNextDay = _.contains(shiftsString, dayAfter) && !_.contains(shiftsString, dayAfter + '_LN'),
+        hasNightShiftOnPreviousDay = _.contains(shiftsString, dayBefore + '_LN'),
+        selectedShiftIsNightShift = _.contains(shiftID, '_LN'),
+        selectedShiftIsNotNightShift = !selectedShiftIsNightShift;
+
+    //Conflict on Same Day
+    //employee has another shift scheduled on the same day
+    if (hasShiftOnSameDay) {
         isAvailable = false;
     }
 
-    //checks conflict with night shift night before
-    if (shiftID.indexOf('_LN') !== -1 && shiftsString.indexOf(dayAfter) !== -1) {
+    //Conflict on Next Day
+    //selected shift IS a Night Shift
+    //and the employee has a shift scheduled on the next day that IS NOT a Night Shift
+    if (selectedShiftIsNightShift && hasConflictingShiftOnNextDay) {
+        isAvailable = false;
+    }
+
+    //Conflict on Previous Day
+    //selected shift IS NOT a Night Shift
+    //and the employee has a shift scheduled on the previous day that IS a Night Shift
+    if (selectedShiftIsNotNightShift && hasNightShiftOnPreviousDay) {
         isAvailable = false;
     }
 

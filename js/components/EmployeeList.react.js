@@ -67,7 +67,8 @@ var EmployeeList = React.createClass({
                             <EmployeeListItem key = {index} employeeName = {employee.employeeName}
                                               employeeID = {employee.employeeID}
                                               committedHours = {employee.committedHours}
-                                              assignedHours = {employee.assignedHours}/>
+                                              assignedHours = {employee.assignedHours}
+                                              isAvailable = {employee.available}/>
                         )
                     })
                 }

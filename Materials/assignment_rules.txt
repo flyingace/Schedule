@@ -1,6 +1,6 @@
 No two shifts on the same day
 No adjacent L&D shifts
-No shift before or after L&D Night
+No shift before or after L&D Night except 2nd L&D Night
 All employees get 2 weekend L&D shifts over 3 months
 
 Emps carry hours +/- from previous week of shifts
@@ -16,7 +16,7 @@ Current date format is 01May2015_LD for May 1, 2015, L&D Day Shift. Should this 
 
 No two shifts on the same day
 No adjacent L&D shifts
-No shift before or after L&D Night
+No shift after L&D Night except another L&D Night
     Does employee have a shift assigned that matches the date in the shift's shiftID
     OR a shift that matches the date from the previous day's LN shift
 

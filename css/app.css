@@ -97,6 +97,9 @@
       border: none; }
     .employee-list .employee:hover {
       background-color: lightblue; }
+    .employee-list .employee.unavailable {
+      background-color: lightgrey;
+      pointer-events: none; }
   .employee-list .close {
     text-align: right; }
     .employee-list .close:hover {

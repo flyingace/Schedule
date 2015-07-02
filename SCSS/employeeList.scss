@@ -28,6 +28,11 @@
     &:hover {
       background-color: lightblue;
     }
+
+    &.unavailable {
+      background-color: lightgrey;
+      pointer-events: none;
+    }
   }
 
   .close {

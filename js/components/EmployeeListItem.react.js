@@ -24,13 +24,29 @@ var EmployeeListItem = React.createClass({
     componentWillUnmount: function () {
     },
 
+    setClassesFromProps: function () {
+        var className = "employee";
+
+        if (this.props.isAvailable === false) {
+            className += " unavailable";
+        }
+
+        return className;
+
+    },
+
     onEmployeeAssign: function () {
-      EmployeeActions.setAssignedEmployee(this.props.employeeID);
+        if (this.props.isAvailable === true) {
+            EmployeeActions.setAssignedEmployee(this.props.employeeID);
+        } else {
+            alert('Are you sure? This employee has a scheduling conflict.')
+        }
     },
 
     render: function () {
         return (
-            <li className = "employee" onClick = {this.onEmployeeAssign}>{this.props.employeeName}: {this.props.committedHours}/{this.props.assignedHours}</li>
+            <li className = {this.setClassesFromProps()}
+                onClick = {this.onEmployeeAssign}>{this.props.employeeName}: {this.props.committedHours}/{this.props.assignedHours}</li>
         );
     }
 });
