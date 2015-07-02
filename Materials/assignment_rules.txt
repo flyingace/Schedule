@@ -21,3 +21,14 @@ No shift after L&D Night except another L&D Night
     OR a shift that matches the date from the previous day's LN shift
 
 How do employee preferences play into this?
+
+
+Proposed steps for auto-assign:
+1. Get number of weekend shifts (5 x full weekends)
+2. Get number of employees covering these shifts
+3. Max number of shifts any employee can be assigned is Math.ceil(weekend shifts/# of employees).
+4. Min number of shifts any employee will be assigned is Math.floor(weekend shifts/# of employees).
+
+Randomly assign weekend shifts. Try to spread them out.
+1. For each WE shift, loop through emps until all emps have minimum number of shifts, avoiding conflicts
+2. For each remaining WE shift randomly select employees, avoiding conflicts, avoiding clustering? No employees have more than max shifts
