@@ -85,8 +85,8 @@ function _assignShiftToEmployee(shift) {
 
 function _unassignShiftToEmployee(shift) {
     var _deselectedEmployee = shift.shiftAssignee;
-    if (_deselectedEmployee) {
-        _deselectedEmployee.assignedShifts.pop(shift.shiftID);
+    if (_deselectedEmployee && _deselectedEmployee.assignedShifts) {
+        _.pull(_deselectedEmployee.assignedShifts, shift.shiftID);
         _deselectedEmployee.assignedHours += shift.shiftLength;
     }
 }

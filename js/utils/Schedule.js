@@ -131,13 +131,7 @@ module.exports = {
             dayID: shift.dayID,
             dayDate: shift.dayDate,
             shiftName: shift.shiftName,
-            shiftAssignee: {
-                employeeName: 'Unassigned',
-                employeeID: 'unassigned',
-                committedHours: 0,
-                assignedHours: 0,
-                assignedShifts: []
-            },
+            shiftAssignee: {},
             shiftAssigneeName: 'Unassigned',
             shiftAssigneeID: 'unassigned',
             shiftLength: shift.shiftLength,
