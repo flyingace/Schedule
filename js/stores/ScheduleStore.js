@@ -109,7 +109,7 @@ function getEmployeeAtRandom(employees, shiftIDArray) {
     var employeeArray = employees.slice(0, -1),
         //determine fewest shifts any employee has
         fewestShifts = getFewestShiftsAssigned(employeeArray, shiftIDArray),
-        employeeSet = employeeArray.length - 1,
+        employeeSet = employeeArray.length,
         randomIndex, candidate, assignedCount, randomEmployee;
     //get employee at random
     while (!randomEmployee) {
