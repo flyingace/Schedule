@@ -77,7 +77,7 @@ function getCoverage (calendar, employees) {
 
     for (var i = 0; i < calendar.length; i++) {
         var shift = calendar[i];
-        if (shift.dayName === 'Saturday' || shift.dayName == 'Sunday') {
+        if (shift.dayName === 'Saturday' || shift.dayName === 'Sunday') {
             weShifts.push(shift);
         } else if (shift.dayName === 'Friday' && shift.shiftName === 'L&D Night') {
             weShifts.push(shift);
@@ -91,12 +91,11 @@ function getCoverage (calendar, employees) {
 }
 
 function assignWEShifts(shiftArray, employees) {
-    console.log(shiftArray);
     var allShiftIDs = _.pluck(shiftArray, 'shiftID');
 
-    for (var i = 0; i < shiftArray.length; i++) {
+    for (var i = 0; i < allShiftIDs.length; i++) {
         var emp = getEmployeeAtRandom(employees, allShiftIDs);
-        CalendarActions.setSelectedShift(shiftArray[i]);
+        CalendarActions.setSelectedShift(allShiftIDs[i]);
         EmployeeActions.setAssignedEmployee(emp.employeeID);
     }
 }
@@ -106,18 +105,29 @@ function assignWEShifts(shiftArray, employees) {
 // length when a random number is being generated. When an employee is assigned, the random number is reset to 0,
 // that way you always guarantee that the loop is finite
 function getEmployeeAtRandom(employees, shiftIDArray) {
-    //determine fewest shifts any employee has
-    var fewestShifts = getFewestShiftsAssigned(employees, shiftIDArray),
+    //make a copy of the array without the employee, "Unassigned"
+    var employeeArray = employees.slice(0, -1),
+        //determine fewest shifts any employee has
+        fewestShifts = getFewestShiftsAssigned(employeeArray, shiftIDArray),
+        employeeSet = employeeArray.length - 1,
         randomIndex, candidate, assignedCount, randomEmployee;
     //get employee at random
     while (!randomEmployee) {
-        randomIndex = Math.floor(Math.random() * employees.length);
-        candidate = employees[randomIndex];
-        assignedCount = _.intersection(candidate.assignedShifts, shiftIDArray).length ;
+        randomIndex = Math.floor(Math.random() * employeeSet);
+        candidate = employeeArray[randomIndex];
+        assignedCount = _.intersection(candidate.assignedShifts, shiftIDArray).length;
 
         //TODO: Also a check for conflicts & assigned hours must be made
         if (assignedCount < fewestShifts + 1) {
+            //since I'm now working with a copy of the original array, do I need to find the original employee?
+            //I don't think so since all that seems important is the employeeID
             randomEmployee = candidate;
+        } else {
+            //remove the candidate from the array and then re-insert it at the end
+            //then reduce employeeSet by 1 so the candidate won't be checked again
+            _.pull(employeeArray, candidate);
+            employeeArray.push(candidate);
+            employeeSet--;
         }
     }
 
@@ -125,14 +135,14 @@ function getEmployeeAtRandom(employees, shiftIDArray) {
 }
 
 function getFewestShiftsAssigned(employees, shiftIDArray) {
-    var fewest = 0,
-        commonCount,
+    var fewest = _.intersection(employees[0].assignedShifts, shiftIDArray).length,
+        employeeAssignedShiftsLength,
         empShiftsArray;
 
-    for (var i = 0; i < employees.length; i++) {
+    for (var i = 1; i < employees.length; i++) {
         empShiftsArray = employees[i].assignedShifts;
-        commonCount = _.intersection(empShiftsArray, shiftIDArray).length;
-        fewest = (commonCount > fewest) ? commonCount : fewest;
+        employeeAssignedShiftsLength = _.intersection(empShiftsArray, shiftIDArray).length;
+        fewest = (employeeAssignedShiftsLength < fewest) ? employeeAssignedShiftsLength : fewest;
     }
 
     return fewest;
