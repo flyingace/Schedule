@@ -189,7 +189,7 @@
      * ------------------------------------------------------------------------------------------------------------------- **/
 
     "indent":                 0,  // - this option sets a specific tab width for your code (off by default)
-    "brace-style":            [1, "stroustrup", {"allowSingleLine": true}],  // - enforce one true brace style (off by default)
+    "brace-style":            [0, "stroustrup", {"allowSingleLine": true}],  // - enforce one true brace style (off by default)
     "camelcase":              0,  // - require camel case names
     "comma-spacing":          0,  // - enforce spacing before and after comma
     "comma-style":            2,  // - enforce one true comma style (off by default)
