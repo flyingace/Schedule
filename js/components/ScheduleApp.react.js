@@ -45,7 +45,7 @@ var ScheduleApp = React.createClass({
     },
 
     populateWeekends: function () {
-        setTimeout(ScheduleStore.getCoverage, 1000);
+        setTimeout(ScheduleStore.getCoverage, 5000);
     },
 
     // Render our child components, passing state via props

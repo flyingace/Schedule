@@ -4,6 +4,7 @@
 
 var $ = require('jquery');
 var _ = require('lodash');
+var moment = require('moment');
 var ScheduleDispatcher = require('../dispatcher/ScheduleDispatcher');
 var ScheduleConstants = require('../constants/ScheduleConstants');
 var CalendarActions = require('../actions/CalendarActions');
@@ -70,57 +71,52 @@ function scheduleEmployees() {
  2. For each remaining WE shift randomly select employees, avoiding conflicts, avoiding clustering? No employees have more than max shifts
 */
 function getCoverage (calendar, employees) {
-    var weShifts = [],
-        employeeCount = employees.length,
-        minShifts,
-        maxShifts;
+    var weekendShifts = [];
 
     for (var i = 0; i < calendar.length; i++) {
         var shift = calendar[i];
-        if (shift.dayName === 'Saturday' || shift.dayName === 'Sunday') {
-            weShifts.push(shift);
-        } else if (shift.dayName === 'Friday' && shift.shiftName === 'L&D Night') {
-            weShifts.push(shift);
+
+        if (shift.dayName === 'Saturday' || shift.dayName === 'Sunday' ||
+            (shift.dayName === 'Friday' && shift.shiftName === 'L&D Night')) {
+            weekendShifts.push(shift);
         }
     }
 
-    assignWEShifts(weShifts, employees);
+    assignWeekendShifts(weekendShifts, employees);
 
     console.log(calendar.length);
-    console.log(weShifts.length);
 }
 
-function assignWEShifts(shiftArray, employees) {
-    var allShiftIDs = _.pluck(shiftArray, 'shiftID');
+function assignWeekendShifts(weekendShifts, employees) {
+    var weekendShiftIDs = _.pluck(weekendShifts, 'shiftID'),
+        emp;
 
-    for (var i = 0; i < allShiftIDs.length; i++) {
-        var emp = getEmployeeAtRandom(employees, allShiftIDs);
-        CalendarActions.setSelectedShift(allShiftIDs[i]);
-        EmployeeActions.setAssignedEmployee(emp.employeeID);
+    for (var i = 0; i < weekendShifts.length; i++) {
+        if (_.isEmpty(weekendShifts[i].shiftAssignee)) {
+            emp = getEmployeeAtRandom(employees, weekendShiftIDs, weekendShiftIDs[i]);
+            CalendarActions.setSelectedShift(weekendShiftIDs[i]);
+            EmployeeActions.setAssignedEmployee(emp.employeeID);
+        }
     }
 }
 
-//TODO: The math here means that this loop could go on forever, though it probably won't
-//Perhaps try pushing that employee to the end of the shift and then adding 1 to a number to be subtracted from the
-// length when a random number is being generated. When an employee is assigned, the random number is reset to 0,
-// that way you always guarantee that the loop is finite
-function getEmployeeAtRandom(employees, shiftIDArray) {
-    //make a copy of the array without the employee, "Unassigned"
+function getEmployeeAtRandom(employees, weekendShiftIDs, targetShift) {
+    //make a copy of the array without the employee "Unassigned"
     var employeeArray = employees.slice(0, -1),
-        //determine fewest shifts any employee has
-        fewestShifts = getFewestShiftsAssigned(employeeArray, shiftIDArray),
         employeeSet = employeeArray.length,
-        randomIndex, candidate, assignedCount, randomEmployee;
+        //determine fewest shifts any employee has
+        fewestShifts = getFewestShiftsAssigned(employeeArray, weekendShiftIDs),
+        randomIndex, candidate, assignedCount, randomEmployee, isAvailable;
     //get employee at random
     while (!randomEmployee) {
         randomIndex = Math.floor(Math.random() * employeeSet);
         candidate = employeeArray[randomIndex];
-        assignedCount = _.intersection(candidate.assignedShifts, shiftIDArray).length;
+        assignedCount = _.intersection(candidate.assignedShifts, weekendShiftIDs).length;
+
+        isAvailable = checkForConflicts(candidate, targetShift);
 
         //TODO: Also a check for conflicts & assigned hours must be made
-        if (assignedCount < fewestShifts + 1) {
-            //since I'm now working with a copy of the original array, do I need to find the original employee?
-            //I don't think so since all that seems important is the employeeID
+        if (assignedCount < fewestShifts + 1 && isAvailable) {
             randomEmployee = candidate;
         } else {
             //remove the candidate from the array and then re-insert it at the end
@@ -128,10 +124,52 @@ function getEmployeeAtRandom(employees, shiftIDArray) {
             _.pull(employeeArray, candidate);
             employeeArray.push(candidate);
             employeeSet--;
+
+            if (employeeSet < 0) {
+                alert("This thing aint workin'");
+            }
         }
     }
 
     return randomEmployee;
+}
+
+function checkForConflicts(candidate, targetShift) {
+        var shiftID = targetShift,
+            shifts = candidate.assignedShifts,
+            dayOfShift = shiftID.slice(0, -3),
+            dayAfter = moment(dayOfShift, 'DDMMMMYYYY').add(1, 'days').format('DDMMMMYYYY'),
+            dayBefore = moment(dayOfShift, 'DDMMMMYYYY').subtract(1, 'days').format('DDMMMMYYYY'),
+            shiftsString = shifts.toString(),
+            isAvailable = true,
+
+            hasShiftOnSameDay = _.contains(shiftsString, dayOfShift),
+            hasConflictingShiftOnNextDay = _.contains(shiftsString, dayAfter) && !_.contains(shiftsString, dayAfter + '_LN'),
+            hasNightShiftOnPreviousDay = _.contains(shiftsString, dayBefore + '_LN'),
+            selectedShiftIsNightShift = _.contains(shiftID, '_LN'),
+            selectedShiftIsNotNightShift = !selectedShiftIsNightShift;
+
+        //Conflict on Same Day
+        //employee has another shift scheduled on the same day
+        if (hasShiftOnSameDay) {
+            isAvailable = false;
+        }
+
+        //Conflict on Next Day
+        //selected shift IS a Night Shift
+        //and the employee has a shift scheduled on the next day that IS NOT a Night Shift
+        if (selectedShiftIsNightShift && hasConflictingShiftOnNextDay) {
+            isAvailable = false;
+        }
+
+        //Conflict on Previous Day
+        //selected shift IS NOT a Night Shift
+        //and the employee has a shift scheduled on the previous day that IS a Night Shift
+        if (selectedShiftIsNotNightShift && hasNightShiftOnPreviousDay) {
+            isAvailable = false;
+        }
+
+        return isAvailable;
 }
 
 function getFewestShiftsAssigned(employees, shiftIDArray) {
