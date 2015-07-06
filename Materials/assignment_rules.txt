@@ -32,3 +32,13 @@ Proposed steps for auto-assign:
 Randomly assign weekend shifts. Try to spread them out.
 1. For each WE shift, loop through emps until all emps have minimum number of shifts, avoiding conflicts
 2. For each remaining WE shift randomly select employees, avoiding conflicts, avoiding clustering? No employees have more than max shifts
+
+employees with different #'s of hours
+shifts of different lengths
+conflicts that must be avoided
+employee preferences
+
+10 employees: [20 x3, 24, 32, 40 x5]
+28 shifts: [4, 8 x 13, 14 x 12]
+Total Coverage: 316 hours/week
+Total Shift Hours: 276 hours/week
