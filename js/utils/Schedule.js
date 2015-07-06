@@ -29,17 +29,16 @@ module.exports = {
             shiftArray,
             formattedDate,
             shiftsForDay,
-            dayDate;
+            dayDate,
+            week;
 
         //check if the date comes after the lastDate, so lastDate is included in the array
         while (!dateInRange.isAfter(lastDate)) {
 
             formattedDate = dateInRange.format('dddd, MMMM, DD, YYYY').split(', ');
+            week = dateInRange.week();
 
-            dayDate = parseInt(formattedDate[2], 10);
-
-            //TODO: Seems like passing the formatted date and the dayDate is redundant
-            shiftsForDay = this.getShiftsForDay(formattedDate, dayDate);
+            shiftsForDay = this.getShiftsForDay(formattedDate, week);
 
             shiftsArray.push(shiftsForDay);
 
@@ -51,10 +50,11 @@ module.exports = {
         return shiftArray;
     },
 
-    getShiftsForDay: function getShiftsForDay(formattedDate, dayDate) {
+    getShiftsForDay: function getShiftsForDay(formattedDate, weekNumber) {
         var monthName = formattedDate[1],
             monthID = monthName + formattedDate[3],
             dayName = formattedDate[0],
+            dayDate = parseInt(formattedDate[2], 10),
             dayID = formattedDate[2] + monthID,
             shiftNames = this.getShiftNamesByDayOfWeek(dayName),
             shiftsForDay = [],
@@ -85,7 +85,7 @@ module.exports = {
                     break;
             }
 
-            _.assign(shiftData, {monthName: monthName, monthID: monthID, dayName: dayName, dayID: dayID, dayDate: dayDate});
+            _.assign(shiftData, {monthName: monthName, monthID: monthID, weekNumber: weekNumber, dayName: dayName, dayID: dayID, dayDate: dayDate});
 
             shiftsForDay.push(this.generateShiftObject(shiftData));
         }
@@ -127,6 +127,7 @@ module.exports = {
         return {
             monthName: shift.monthName,
             monthID: shift.monthID,
+            weekNumber: shift.weekNumber,
             dayName: shift.dayName,
             dayID: shift.dayID,
             dayDate: shift.dayDate,
