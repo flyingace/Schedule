@@ -56,7 +56,7 @@ function scheduleEmployees() {
     var calendar = CalendarStore.getCalendarData(),
         employees = EmployeeStore.getEmployeeData();
 
-    getCoverage(calendar, employees);
+    //getCoverage(calendar, employees);
 }
 
 /*
@@ -71,7 +71,8 @@ function scheduleEmployees() {
  2. For each remaining WE shift randomly select employees, avoiding conflicts, avoiding clustering? No employees have more than max shifts
 */
 function getCoverage (calendar, employees) {
-    var weekendShifts = [];
+    var weekendShifts = [],
+        weekdayShifts = [];
 
     for (var i = 0; i < calendar.length; i++) {
         var shift = calendar[i];
@@ -79,43 +80,45 @@ function getCoverage (calendar, employees) {
         if (shift.dayName === 'Saturday' || shift.dayName === 'Sunday' ||
             (shift.dayName === 'Friday' && shift.shiftName === 'L&D Night')) {
             weekendShifts.push(shift);
+        } else {
+            weekdayShifts.push(shift);
         }
     }
 
-    assignWeekendShifts(weekendShifts, employees);
+    assignShifts(weekendShifts, employees);
+    assignShifts(weekdayShifts, employees);
 
     console.log(calendar.length);
 }
 
-function assignWeekendShifts(weekendShifts, employees) {
-    var weekendShiftIDs = _.pluck(weekendShifts, 'shiftID'),
+function assignShifts(shifts, employees) {
+    var shiftIDs = _.pluck(shifts, 'shiftID'),
         emp;
 
-    for (var i = 0; i < weekendShifts.length; i++) {
-        if (_.isEmpty(weekendShifts[i].shiftAssignee)) {
-            emp = getEmployeeAtRandom(employees, weekendShiftIDs, weekendShiftIDs[i]);
-            CalendarActions.setSelectedShift(weekendShiftIDs[i]);
+    for (var i = 0; i < shifts.length; i++) {
+        if (_.isEmpty(shifts[i].shiftAssignee)) {
+            emp = getEmployeeAtRandom(employees, shiftIDs, shiftIDs[i]);
+            CalendarActions.setSelectedShift(shiftIDs[i]);
             EmployeeActions.setAssignedEmployee(emp.employeeID);
         }
     }
 }
 
-function getEmployeeAtRandom(employees, weekendShiftIDs, targetShift) {
+function getEmployeeAtRandom(employees, shiftIDs, targetShift) {
     //make a copy of the array without the employee "Unassigned"
     var employeeArray = employees.slice(0, -1),
         employeeSet = employeeArray.length,
         //determine fewest shifts any employee has
-        fewestShifts = getFewestShiftsAssigned(employeeArray, weekendShiftIDs),
+        fewestShifts = getFewestShiftsAssigned(employeeArray, shiftIDs),
         randomIndex, candidate, assignedCount, randomEmployee, isAvailable;
     //get employee at random
     while (!randomEmployee) {
         randomIndex = Math.floor(Math.random() * employeeSet);
         candidate = employeeArray[randomIndex];
-        assignedCount = _.intersection(candidate.assignedShifts, weekendShiftIDs).length;
+        assignedCount = _.intersection(candidate.assignedShifts, shiftIDs).length;
 
         isAvailable = checkForConflicts(candidate, targetShift);
 
-        //TODO: Also a check for conflicts & assigned hours must be made
         if (assignedCount < fewestShifts + 1 && isAvailable) {
             randomEmployee = candidate;
         } else {
@@ -132,6 +135,43 @@ function getEmployeeAtRandom(employees, weekendShiftIDs, targetShift) {
     }
 
     return randomEmployee;
+}
+
+function getEmployeeAtRandom2(employees, shifts, targetShift) {
+    //make a copy of the array without the employee "Unassigned"
+    var employeeArray = employees.slice(0, -1),
+        employeeSet = employeeArray.length,
+    //compare ratio
+        lowestRatio = getLowestRatio(employeeArray, shifts),
+        randomIndex, candidate, assignedCount, randomEmployee, isAvailable;
+    //get employee at random
+    while (!randomEmployee) {
+        randomIndex = Math.floor(Math.random() * employeeSet);
+        candidate = employeeArray[randomIndex];
+        assignedCount = _.intersection(candidate.assignedShifts, shifts).length;
+
+        isAvailable = checkForConflicts(candidate, targetShift);
+
+        if (assignedCount < lowestRatio + 1 && isAvailable) {
+            randomEmployee = candidate;
+        } else {
+            //remove the candidate from the array and then re-insert it at the end
+            //then reduce employeeSet by 1 so the candidate won't be checked again
+            _.pull(employeeArray, candidate);
+            employeeArray.push(candidate);
+            employeeSet--;
+
+            if (employeeSet < 0) {
+                alert("This thing aint workin'");
+            }
+        }
+    }
+
+    return randomEmployee;
+}
+
+function lowestRatio(employeeArray, shifts) {
+
 }
 
 function checkForConflicts(candidate, targetShift) {
@@ -186,9 +226,7 @@ function getFewestShiftsAssigned(employees, shiftIDArray) {
     return fewest;
 }
 
-function scheduleWeekends(calendar, employees) {
 
-}
 
 // Extend ScheduleStore with EventEmitter to add eventing capabilities
 var ScheduleStore = _.extend({}, EventEmitter.prototype, {

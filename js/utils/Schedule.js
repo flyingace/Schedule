@@ -142,6 +142,17 @@ module.exports = {
     }
 
     /*
+    1. Choose employee at random
+    2. Validate against
+        1. Conflicts
+        2. Whether they have more shifts than the average assigned to them than their colleagues
+        3. Whether the ratio of assigned hours to contracted hours differs greatly from their colleagues
+    3. If not assign them to shift
+    4. If any conflicts, loop to next candidate
+     */
+
+
+    /*
      The following functions are part of legacy code used in randomly assigning unassigned shifts
      I am leaving these in here for the time being in case they are needed to provide insight
      into how to go about building out this functionality, though I am doubtful that they will :)
