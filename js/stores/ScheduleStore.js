@@ -97,30 +97,30 @@ function assignShifts(shifts, employees) {
 
     for (var i = 0; i < shifts.length; i++) {
         if (_.isEmpty(shifts[i].shiftAssignee)) {
-            emp = getEmployeeAtRandom(employees, shiftIDs, shiftIDs[i]);
+            emp = getEmployee(employees, shiftIDs, shiftIDs[i]);
             CalendarActions.setSelectedShift(shiftIDs[i]);
             EmployeeActions.setAssignedEmployee(emp.employeeID);
         }
     }
 }
 
-function getEmployeeAtRandom(employees, shiftIDs, targetShift) {
+function getEmployee(employees, shiftIDs, targetShift) {
     //make a copy of the array without the employee "Unassigned"
     var employeeArray = employees.slice(0, -1),
         employeeSet = employeeArray.length,
         //determine fewest shifts any employee has
         fewestShifts = getFewestShiftsAssigned(employeeArray, shiftIDs),
-        randomIndex, candidate, assignedCount, randomEmployee, isAvailable;
+        randomIndex, candidate, assignedCount, employeeToAssign, hasNoConflicts;
     //get employee at random
-    while (!randomEmployee) {
+    while (!employeeToAssign) {
         randomIndex = Math.floor(Math.random() * employeeSet);
         candidate = employeeArray[randomIndex];
         assignedCount = _.intersection(candidate.assignedShifts, shiftIDs).length;
 
-        isAvailable = checkForConflicts(candidate, targetShift);
+        hasNoConflicts = checkForConflicts(candidate, targetShift);
 
-        if (assignedCount < fewestShifts + 1 && isAvailable) {
-            randomEmployee = candidate;
+        if (assignedCount < fewestShifts + 1 && hasNoConflicts) {
+            employeeToAssign = candidate;
         } else {
             //remove the candidate from the array and then re-insert it at the end
             //then reduce employeeSet by 1 so the candidate won't be checked again
@@ -134,7 +134,7 @@ function getEmployeeAtRandom(employees, shiftIDs, targetShift) {
         }
     }
 
-    return randomEmployee;
+    return employeeToAssign;
 }
 
 function getEmployeeAtRandom2(employees, shifts, targetShift) {
