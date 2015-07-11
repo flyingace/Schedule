@@ -56,7 +56,7 @@ function scheduleEmployees() {
     var calendar = CalendarStore.getCalendarData(),
         employees = EmployeeStore.getEmployeeData();
 
-    //getCoverage(calendar, employees);
+    getCoverage(calendar, employees);
 }
 
 /*
@@ -69,8 +69,8 @@ function scheduleEmployees() {
  Randomly assign weekend shifts. Try to spread them out.
  1. For each WE shift, loop through emps until all emps have minimum number of shifts, avoiding conflicts
  2. For each remaining WE shift randomly select employees, avoiding conflicts, avoiding clustering? No employees have more than max shifts
-*/
-function getCoverage (calendar, employees) {
+ */
+function getCoverage(calendar, employees) {
     var weekendShifts = [],
         weekdayShifts = [];
 
@@ -85,18 +85,20 @@ function getCoverage (calendar, employees) {
         }
     }
 
-    assignShifts(weekendShifts, employees);
-    assignShifts(weekdayShifts, employees);
+    assignShifts(weekendShifts, employees, 'weekend');
+    assignShifts(weekdayShifts, employees, 'weekday');
 
     console.log(calendar.length);
 }
 
-function assignShifts(shifts, employees) {
+function assignShifts(shifts, employees, shiftType) {
     var shiftIDs = _.pluck(shifts, 'shiftID'),
+        getEmployee = (shiftType === 'weekend') ? getWeekendEmployee : getWeekdayEmployee,
         emp;
 
     for (var i = 0; i < shifts.length; i++) {
         if (_.isEmpty(shifts[i].shiftAssignee)) {
+
             emp = getEmployee(employees, shiftIDs, shiftIDs[i]);
             CalendarActions.setSelectedShift(shiftIDs[i]);
             EmployeeActions.setAssignedEmployee(emp.employeeID);
@@ -104,70 +106,90 @@ function assignShifts(shifts, employees) {
     }
 }
 
-function getEmployee(employees, shiftIDs, targetShift) {
+function getWeekendEmployee(employees, shiftIDs, targetShift) {
     //make a copy of the array without the employee "Unassigned"
     var employeeArray = employees.slice(0, -1),
         employeeSet = employeeArray.length,
-        //determine fewest shifts any employee has
+    //determine fewest shifts any employee has
         fewestShifts = getFewestShiftsAssigned(employeeArray, shiftIDs),
-        randomIndex, candidate, assignedCount, employeeToAssign, hasNoConflicts;
+        randomIndex, candidate, assignedCount, employeeToAssign, hasConflicts;
+
     //get employee at random
     while (!employeeToAssign) {
         randomIndex = Math.floor(Math.random() * employeeSet);
         candidate = employeeArray[randomIndex];
         assignedCount = _.intersection(candidate.assignedShifts, shiftIDs).length;
 
-        hasNoConflicts = checkForConflicts(candidate, targetShift);
+        hasConflicts = checkForConflicts(candidate, targetShift);
 
-        if (assignedCount < fewestShifts + 1 && hasNoConflicts) {
+        //Does the candidate have any conflicts & do they match the lowest number of shifts?
+        if (checkForConflicts(candidate, targetShift) && (assignedCount < fewestShifts + 1)) {
+            adjustEmployeeArray(employeeArray, employeeSet, candidate);
+        } else {
+            randomEmployee = candidate;
+        }
+
+        if (assignedCount < fewestShifts + 1 && !hasConflicts) {
             employeeToAssign = candidate;
         } else {
-            //remove the candidate from the array and then re-insert it at the end
-            //then reduce employeeSet by 1 so the candidate won't be checked again
-            _.pull(employeeArray, candidate);
-            employeeArray.push(candidate);
-            employeeSet--;
-
-            if (employeeSet < 0) {
-                alert("This thing aint workin'");
-            }
+            adjustEmployeeArray(employeeArray, employeeSet, candidate);
         }
     }
 
     return employeeToAssign;
 }
 
-function getEmployeeAtRandom2(employees, shifts, targetShift) {
+function getWeekdayEmployee(employees, shifts, targetShift) {
     //make a copy of the array without the employee "Unassigned"
     var employeeArray = employees.slice(0, -1),
         employeeSet = employeeArray.length,
     //compare ratio
         lowestRatio = getLowestRatio(employeeArray, shifts),
-        randomIndex, candidate, assignedCount, randomEmployee, isAvailable;
+        randomIndex, candidate, assignedCount, randomEmployee, hasNoConflicts;
+
     //get employee at random
     while (!randomEmployee) {
         randomIndex = Math.floor(Math.random() * employeeSet);
         candidate = employeeArray[randomIndex];
-        assignedCount = _.intersection(candidate.assignedShifts, shifts).length;
 
-        isAvailable = checkForConflicts(candidate, targetShift);
-
-        if (assignedCount < lowestRatio + 1 && isAvailable) {
-            randomEmployee = candidate;
+        //Does the candidate have any conflicts and are they out of available hours?
+        if (checkForConflicts(candidate, targetShift) && !hasHoursAvailable(candidate, targetShift)) {
+            adjustEmployeeArray(employeeArray, employeeSet, candidate);
         } else {
-            //remove the candidate from the array and then re-insert it at the end
-            //then reduce employeeSet by 1 so the candidate won't be checked again
-            _.pull(employeeArray, candidate);
-            employeeArray.push(candidate);
-            employeeSet--;
-
-            if (employeeSet < 0) {
-                alert("This thing aint workin'");
-            }
+            randomEmployee = candidate;
         }
     }
 
     return randomEmployee;
+}
+/*
+ By week, in order, select a shift
+ Randomly choose an employee
+ Has that employee exceeded the ACCEPTABLE LIMIT
+ Yes, assign shift
+ No, adjust array as done with weekend shifts
+ Start employee check again
+
+ When is an employee's weekly commitment adjusted?
+ At start of week?
+ How is this done?
+ Their hours assigned vs. hours contracted is checked and hours contracted for the coming week is adjusted
+
+ How is ACCEPTABLE LIMIT determined?
+ For each week need is compared to availability. The difference is used to adjust
+
+ */
+
+function adjustEmployeeArray(employeeArray, employeeSet, candidate) {
+    //remove the candidate from the array and then re-insert it at the end
+    //then reduce employeeSet by 1 so the candidate won't be checked again
+    _.pull(employeeArray, candidate);
+    employeeArray.push(candidate);
+    employeeSet--;
+
+    if (employeeSet < 0) {
+        alert("This thing aint workin'");
+    }
 }
 
 function lowestRatio(employeeArray, shifts) {
@@ -175,41 +197,41 @@ function lowestRatio(employeeArray, shifts) {
 }
 
 function checkForConflicts(candidate, targetShift) {
-        var shiftID = targetShift,
-            shifts = candidate.assignedShifts,
-            dayOfShift = shiftID.slice(0, -3),
-            dayAfter = moment(dayOfShift, 'DDMMMMYYYY').add(1, 'days').format('DDMMMMYYYY'),
-            dayBefore = moment(dayOfShift, 'DDMMMMYYYY').subtract(1, 'days').format('DDMMMMYYYY'),
-            shiftsString = shifts.toString(),
-            isAvailable = true,
+    var shiftID = targetShift,
+        shifts = candidate.assignedShifts,
+        dayOfShift = shiftID.slice(0, -3),
+        dayAfter = moment(dayOfShift, 'DDMMMMYYYY').add(1, 'days').format('DDMMMMYYYY'),
+        dayBefore = moment(dayOfShift, 'DDMMMMYYYY').subtract(1, 'days').format('DDMMMMYYYY'),
+        shiftsString = shifts.toString(),
+        hasConflicts = false,
 
-            hasShiftOnSameDay = _.contains(shiftsString, dayOfShift),
-            hasConflictingShiftOnNextDay = _.contains(shiftsString, dayAfter) && !_.contains(shiftsString, dayAfter + '_LN'),
-            hasNightShiftOnPreviousDay = _.contains(shiftsString, dayBefore + '_LN'),
-            selectedShiftIsNightShift = _.contains(shiftID, '_LN'),
-            selectedShiftIsNotNightShift = !selectedShiftIsNightShift;
+        hasShiftOnSameDay = _.contains(shiftsString, dayOfShift),
+        hasConflictingShiftOnNextDay = _.contains(shiftsString, dayAfter) && !_.contains(shiftsString, dayAfter + '_LN'),
+        hasNightShiftOnPreviousDay = _.contains(shiftsString, dayBefore + '_LN'),
+        selectedShiftIsNightShift = _.contains(shiftID, '_LN'),
+        selectedShiftIsNotNightShift = !selectedShiftIsNightShift;
 
-        //Conflict on Same Day
-        //employee has another shift scheduled on the same day
-        if (hasShiftOnSameDay) {
-            isAvailable = false;
-        }
+    //Conflict on Same Day
+    //employee has another shift scheduled on the same day
+    if (hasShiftOnSameDay) {
+        hasConflicts = true;
+    }
 
-        //Conflict on Next Day
-        //selected shift IS a Night Shift
-        //and the employee has a shift scheduled on the next day that IS NOT a Night Shift
-        if (selectedShiftIsNightShift && hasConflictingShiftOnNextDay) {
-            isAvailable = false;
-        }
+    //Conflict on Next Day
+    //selected shift IS a Night Shift
+    //and the employee has a shift scheduled on the next day that IS NOT a Night Shift
+    if (selectedShiftIsNightShift && hasConflictingShiftOnNextDay) {
+        hasConflicts = true;
+    }
 
-        //Conflict on Previous Day
-        //selected shift IS NOT a Night Shift
-        //and the employee has a shift scheduled on the previous day that IS a Night Shift
-        if (selectedShiftIsNotNightShift && hasNightShiftOnPreviousDay) {
-            isAvailable = false;
-        }
+    //Conflict on Previous Day
+    //selected shift IS NOT a Night Shift
+    //and the employee has a shift scheduled on the previous day that IS a Night Shift
+    if (selectedShiftIsNotNightShift && hasNightShiftOnPreviousDay) {
+        hasConflicts = true;
+    }
 
-        return isAvailable;
+    return hasConflicts;
 }
 
 function getFewestShiftsAssigned(employees, shiftIDArray) {
@@ -226,6 +248,9 @@ function getFewestShiftsAssigned(employees, shiftIDArray) {
     return fewest;
 }
 
+function hasHoursAvailable(candidate, targetShift) {
+  return true;
+}
 
 
 // Extend ScheduleStore with EventEmitter to add eventing capabilities
@@ -235,7 +260,7 @@ var ScheduleStore = _.extend({}, EventEmitter.prototype, {
         return _empListStatus;
     },
 
-    getCoverage: function() {
+    getCoverage: function () {
         scheduleEmployees();
     },
 
