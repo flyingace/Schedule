@@ -32,10 +32,11 @@ module.exports = {
             dayDate,
             week;
 
+        //TODO: It might be worthwhile to look over the moment-range plugin
         //check if the date comes after the lastDate, so lastDate is included in the array
         while (!dateInRange.isAfter(lastDate)) {
-
             formattedDate = dateInRange.format('dddd, MMMM, DD, YYYY').split(', ');
+
             week = dateInRange.week();
 
             shiftsForDay = this.getShiftsForDay(formattedDate, week);
@@ -63,25 +64,25 @@ module.exports = {
         for (var i = 0; i < shiftNames.length; i++) {
             switch (shiftNames[i]) {
                 case 'L&D Day':
-                    shiftData = {shiftName: shiftNames[i], shiftLength: 12, shiftIDSuffix: '_LD'};
+                    shiftData = {shiftName: shiftNames[i], shiftLength: 12, shiftIDSuffix: 'LD'};
                     break;
                 case 'L&D Night':
-                    shiftData = {shiftName: shiftNames[i], shiftLength: 12, shiftIDSuffix: '_LN'};
+                    shiftData = {shiftName: shiftNames[i], shiftLength: 12, shiftIDSuffix: 'LN'};
                     break;
                 case 'Clinic 1':
-                    shiftData = {shiftName: shiftNames[i], shiftLength: 8, shiftIDSuffix: '_C1'};
+                    shiftData = {shiftName: shiftNames[i], shiftLength: 8, shiftIDSuffix: 'C1'};
                     break;
                 case 'Clinic 2':
-                    shiftData = {shiftName: shiftNames[i], shiftLength: 8, shiftIDSuffix: '_C2'};
+                    shiftData = {shiftName: shiftNames[i], shiftLength: 8, shiftIDSuffix: 'C2'};
                     break;
                 case 'High Risk':
-                    shiftData = {shiftName: shiftNames[i], shiftLength: 8, shiftIDSuffix: '_HR'};
+                    shiftData = {shiftName: shiftNames[i], shiftLength: 8, shiftIDSuffix: 'HR'};
                     break;
                 case 'Friday Coverage':
-                    shiftData = {shiftName: shiftNames[i], shiftLength: 4, shiftIDSuffix: '_FC'};
+                    shiftData = {shiftName: shiftNames[i], shiftLength: 4, shiftIDSuffix: 'FC'};
                     break;
                 default:
-                    console.log('Houston, we have a problem.');
+                    console.log('Houston, we have a problem: getShiftsForDay');
                     break;
             }
 
@@ -136,109 +137,8 @@ module.exports = {
             shiftAssigneeName: 'Unassigned',
             shiftAssigneeID: 'unassigned',
             shiftLength: shift.shiftLength,
-            shiftID: shift.dayID + shift.shiftIDSuffix,
+            shiftID: shift.dayID + '-' + shift.weekNumber + '-' + shift.shiftLength + '-' + shift.shiftIDSuffix,
             selected: false
         };
     }
-
-    /*
-    1. Choose employee at random
-    2. Validate against
-        1. Conflicts
-        2. Whether they have more shifts than the average assigned to them than their colleagues
-        3. Whether the ratio of assigned hours to contracted hours differs greatly from their colleagues
-    3. If not assign them to shift
-    4. If any conflicts, loop to next candidate
-     */
-
-
-    /*
-     The following functions are part of legacy code used in randomly assigning unassigned shifts
-     I am leaving these in here for the time being in case they are needed to provide insight
-     into how to go about building out this functionality, though I am doubtful that they will :)
-
-     //in use
-     assignShift: function assignShift(shift) {
-     var candidate;
-
-     while (shift.shiftAssignee === '') {
-     candidate = this.chooseRandomEmployee();
-     var candidateIsAvailable = this.checkAvailability(candidate, shift.length);
-
-     if (candidateIsAvailable) {
-     this.adjustCandidateAvailability(candidate, shift.length);
-     shift.shiftAssignee = candidate.name;
-     }
-     }
-     },
-
-     //in use
-     assignShifts: function assignShifts(shiftsForDay) {
-
-     for (var i = 0; i < shiftsForDay.length; i++) {
-     this.assignShift(shiftsForDay[i]);
-     }
-     },
-
-     //in use
-     createShifts: function createShifts(dayInfo) {
-     var shiftNameArray = dayInfo.shifts,
-     shiftDate = dayInfo.date,
-     dayOfShifts = [];
-
-     for (var i = 0; i < shiftNameArray.length; i++) {
-     var newShift = this.createShift(shiftNameArray[i], shiftDate);
-     dayOfShifts.push(newShift);
-     }
-
-     return dayOfShifts;
-     },
-
-     //in use
-     //TODO: Maybe add something to this that checks whether the selected employee has
-     //a ratio of unassignedHours/contractHours that is above or below the average ratio
-     //of all other employees
-     chooseRandomEmployee: function chooseRandomEmployee() {
-     var empIndex = Math.floor(Math.random() * this.staff.length);
-
-     return this.staff[empIndex];
-     },
-
-     //in use
-     checkAvailability: function checkAvailability(candidate, shiftLength) {
-     return (candidate.unassignedHours >= shiftLength);
-     },
-
-     //in use
-     adjustCandidateAvailability: function adjustCandidateAvailability(candidate, shiftLength) {
-     candidate.unassignedHours -= shiftLength;
-     },
-
-     //in use
-     getCoverage: function getCoverage() {
-     var calendar = this.calendar,
-     dayInformation,
-     dayOfShifts = [];
-
-     for (var i = 0; i < calendar.length; i++) {
-     dayInformation = this.getShifts(calendar[i]);
-     dayOfShifts = this.createShifts(dayInformation);
-     this.assignShifts(dayOfShifts);
-     this.assignedShifts.push(dayOfShifts);
-     }
-
-     console.log(JSON.stringify(this.assignedShifts));
-     }
-     */
-
-    //return {
-    //    //createEmployee: createEmployee,
-    //    //addEmployeeToStaff: addEmployeeToStaff,
-    //    //createShift: createShift,
-    //    //addShiftToSchedule: addShiftToSchedule,
-    //    createStaff: createStaff,
-    //    determineCalendar: determineCalendar,
-    //    getCoverage: getCoverage
-    //};
-
 };

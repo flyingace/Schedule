@@ -56,7 +56,8 @@ function scheduleEmployees() {
     var calendar = CalendarStore.getCalendarData(),
         employees = EmployeeStore.getEmployeeData();
 
-    getCoverage(calendar, employees);
+    //debugger;
+    getShiftCoverage(calendar, employees);
 }
 
 /*
@@ -70,7 +71,7 @@ function scheduleEmployees() {
  1. For each WE shift, loop through emps until all emps have minimum number of shifts, avoiding conflicts
  2. For each remaining WE shift randomly select employees, avoiding conflicts, avoiding clustering? No employees have more than max shifts
  */
-function getCoverage(calendar, employees) {
+function getShiftCoverage(calendar, employees) {
     var weekendShifts = [],
         weekdayShifts = [];
 
@@ -84,7 +85,6 @@ function getCoverage(calendar, employees) {
             weekdayShifts.push(shift);
         }
     }
-
     assignShifts(weekendShifts, employees, 'weekend');
     assignShifts(weekdayShifts, employees, 'weekday');
 
@@ -112,7 +112,7 @@ function getWeekendEmployee(employees, shiftIDs, targetShift) {
         employeeSet = employeeArray.length,
     //determine fewest shifts any employee has
         fewestShifts = getFewestShiftsAssigned(employeeArray, shiftIDs),
-        randomIndex, candidate, assignedCount, employeeToAssign, hasConflicts;
+        randomIndex, candidate, assignedCount, employeeToAssign;
 
     //get employee at random
     while (!employeeToAssign) {
@@ -120,19 +120,13 @@ function getWeekendEmployee(employees, shiftIDs, targetShift) {
         candidate = employeeArray[randomIndex];
         assignedCount = _.intersection(candidate.assignedShifts, shiftIDs).length;
 
-        hasConflicts = checkForConflicts(candidate, targetShift);
-
         //Does the candidate have any conflicts & do they match the lowest number of shifts?
-        if (checkForConflicts(candidate, targetShift) && (assignedCount < fewestShifts + 1)) {
+        //TODO: run assignedCount & fewestShifts as functions here so time isn't taken to define them if the first
+        // condition (employeeHasConflict) is true
+        if (employeeHasConflict(candidate, targetShift) || (assignedCount >= fewestShifts + 1)) {
             adjustEmployeeArray(employeeArray, employeeSet, candidate);
         } else {
-            randomEmployee = candidate;
-        }
-
-        if (assignedCount < fewestShifts + 1 && !hasConflicts) {
             employeeToAssign = candidate;
-        } else {
-            adjustEmployeeArray(employeeArray, employeeSet, candidate);
         }
     }
 
@@ -140,12 +134,28 @@ function getWeekendEmployee(employees, shiftIDs, targetShift) {
 }
 
 function getWeekdayEmployee(employees, shifts, targetShift) {
+
     //make a copy of the array without the employee "Unassigned"
     var employeeArray = employees.slice(0, -1),
-        employeeSet = employeeArray.length,
+        employeeSet = employeeArray.length;
+
+    for (var i = 0; i < employeeArray.length; i++) {
+        var employee = employeeArray[i];
+        for (var j = 0; j < employee.assignedShifts.length; j++) {
+            var idArray = employee.assignedShifts[j].split('-');
+            if (idArray[1] === targetShift.split('-')[1]) {
+                employee.thisWeeksShifts.push(employee.assignedShifts[j]);
+            }
+        }
+    }
+
+    debugger;
+
+
     //compare ratio
-        lowestRatio = getLowestRatio(employeeArray, shifts),
-        randomIndex, candidate, assignedCount, randomEmployee, hasNoConflicts;
+        lowestRatio, randomIndex, candidate, assignedCount, randomEmployee, hasNoConflicts;
+
+        lowestRatio = getLowestRatio(employeeArray, shifts);
 
     //get employee at random
     while (!randomEmployee) {
@@ -153,7 +163,7 @@ function getWeekdayEmployee(employees, shifts, targetShift) {
         candidate = employeeArray[randomIndex];
 
         //Does the candidate have any conflicts and are they out of available hours?
-        if (checkForConflicts(candidate, targetShift) && !hasHoursAvailable(candidate, targetShift)) {
+        if (employeeHasConflict(candidate, targetShift) || isNotAvailable(candidate, targetShift)) {
             adjustEmployeeArray(employeeArray, employeeSet, candidate);
         } else {
             randomEmployee = candidate;
@@ -176,7 +186,8 @@ function getWeekdayEmployee(employees, shifts, targetShift) {
  Their hours assigned vs. hours contracted is checked and hours contracted for the coming week is adjusted
 
  How is ACCEPTABLE LIMIT determined?
- For each week need is compared to availability. The difference is used to adjust
+ For each week need is compared to availability. The difference is used to adjust the calculation of each employee's
+ contracted hours
 
  */
 
@@ -192,11 +203,17 @@ function adjustEmployeeArray(employeeArray, employeeSet, candidate) {
     }
 }
 
-function lowestRatio(employeeArray, shifts) {
+function getLowestRatio(employeeArray, shifts) {
+    /*
+     Find all shifts for this week
+     How many of hours of these shifts has each employee taken
+     How does that compare to the number of hours they were contracted for?
+     What is the lowest ratio of hours assigned/hours contracted?
+     */
 
 }
 
-function checkForConflicts(candidate, targetShift) {
+function employeeHasConflict(candidate, targetShift) {
     var shiftID = targetShift,
         shifts = candidate.assignedShifts,
         dayOfShift = shiftID.slice(0, -3),
@@ -248,8 +265,9 @@ function getFewestShiftsAssigned(employees, shiftIDArray) {
     return fewest;
 }
 
-function hasHoursAvailable(candidate, targetShift) {
-  return true;
+function isNotAvailable(candidate, targetShift) {
+    return !!Math.round(Math.random());
+    //return true;
 }
 
 

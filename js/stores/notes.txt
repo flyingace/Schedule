@@ -1,0 +1,20 @@
+Make a copy of each shift assigned to an employee which doesn't include redundant information and use that as an aid for sorting.
+
+For every shift, examine for conflicts only those assigned shifts which occur during that week for conflicts and hour limits.
+
+
+if (shift.weeknumber !== weeknumber) {
+    weekNumber = shift.weeknumber;
+    newWeek = true;
+}
+
+for each employee
+if (newWeek) {
+    //reset array of assigned shifts for the week (usually 0)
+    thisWeeksShifts = getThisWeeksShifts(weekNumber);
+    //reset ratio of assignedHours/contractedHours (again, usually 0)
+    thisWeeksRatio = getThisWeeksRatio(thisWeeksShifts, assignedHours);
+}
+
+//when a shift is added to the employee's assigned shifts, add it to thisWeeksShifts and re-assess their ratio
+//sort employees by ratio and assign the first employee
