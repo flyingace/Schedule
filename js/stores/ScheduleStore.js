@@ -94,22 +94,22 @@ function getShiftCoverage(calendar, employees) {
 function assignShifts(shifts, employees, shiftType) {
     var shiftIDs = _.pluck(shifts, 'shiftID'),
         getEmployee = (shiftType === 'weekend') ? getWeekendEmployee : getWeekdayEmployee,
+        //make a copy of the array without the employee "Unassigned"
+        employeeArray = employees.slice(0, -1),
         emp;
 
     for (var i = 0; i < shifts.length; i++) {
         if (_.isEmpty(shifts[i].shiftAssignee)) {
 
-            emp = getEmployee(employees, shiftIDs, shiftIDs[i]);
+            emp = getEmployee(employeeArray, shiftIDs, shiftIDs[i]);
             CalendarActions.setSelectedShift(shiftIDs[i]);
             EmployeeActions.setAssignedEmployee(emp.employeeID);
         }
     }
 }
 
-function getWeekendEmployee(employees, shiftIDs, targetShift) {
-    //make a copy of the array without the employee "Unassigned"
-    var employeeArray = employees.slice(0, -1),
-        employeeSet = employeeArray.length,
+function getWeekendEmployee(employeeArray, shiftIDs, targetShift) {
+    var employeeSet = employeeArray.length,
     //determine fewest shifts any employee has
         fewestShifts = getFewestShiftsAssigned(employeeArray, shiftIDs),
         randomIndex, candidate, assignedCount, employeeToAssign;
@@ -133,11 +133,9 @@ function getWeekendEmployee(employees, shiftIDs, targetShift) {
     return employeeToAssign;
 }
 
-function getWeekdayEmployee(employees, shifts, targetShift) {
+function getWeekdayEmployee(employeeArray, shifts, targetShift) {
 
-    //make a copy of the array without the employee "Unassigned"
-    var employeeArray = employees.slice(0, -1),
-        employeeSet = employeeArray.length;
+    var employeeSet = employeeArray.length;
 
     for (var i = 0; i < employeeArray.length; i++) {
         var employee = employeeArray[i];
