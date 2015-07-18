@@ -9,7 +9,7 @@ module.exports = {
                 {
                     employeeName: 'S. Birdsall',
                     employeeID: 'sbirdsall',
-                    committedHours: 32,
+                    contractedHours: 32,
                     assignedHours: 32,
                     assignedShifts: [],
                     available: true,
@@ -18,7 +18,7 @@ module.exports = {
                 {
                     employeeName: 'A. Brown',
                     employeeID: 'abrown',
-                    committedHours: 20,
+                    contractedHours: 20,
                     assignedHours: 20,
                     assignedShifts: [],
                     available: true,
@@ -27,7 +27,7 @@ module.exports = {
                 {
                     employeeName: 'G. Eich-piks',
                     employeeID: 'geichpiks',
-                    committedHours: 24,
+                    contractedHours: 24,
                     assignedHours: 24,
                     assignedShifts: [],
                     available: true,
@@ -36,7 +36,7 @@ module.exports = {
                 {
                     employeeName: 'K. Fitzgerald',
                     employeeID: 'kfitzgerald',
-                    committedHours: 20,
+                    contractedHours: 20,
                     assignedHours: 20,
                     assignedShifts: [],
                     available: true,
@@ -45,7 +45,7 @@ module.exports = {
                 {
                     employeeName: 'M. Gold',
                     employeeID: 'mgold',
-                    committedHours: 40,
+                    contractedHours: 40,
                     assignedHours: 40,
                     assignedShifts: [],
                     available: true,
@@ -54,7 +54,7 @@ module.exports = {
                 {
                     employeeName: 'M. Larkin',
                     employeeID: 'mlarkin',
-                    committedHours: 40,
+                    contractedHours: 40,
                     assignedHours: 40,
                     assignedShifts: [],
                     available: true,
@@ -63,7 +63,7 @@ module.exports = {
                 {
                     employeeName: 'C. Lubell',
                     employeeID: 'clubell',
-                    committedHours: 40,
+                    contractedHours: 40,
                     assignedHours: 40,
                     assignedShifts: [],
                     available: true,
@@ -72,7 +72,7 @@ module.exports = {
                 {
                     employeeName: 'N. Richey',
                     employeeID: 'nrichey',
-                    committedHours: 40,
+                    contractedHours: 40,
                     assignedHours: 40,
                     assignedShifts: [],
                     available: true,
@@ -81,7 +81,7 @@ module.exports = {
                 {
                     employeeName: 'E. Wenzel',
                     employeeID: 'ewenzel',
-                    committedHours: 40,
+                    contractedHours: 40,
                     assignedHours: 40,
                     assignedShifts: [],
                     available: true,
@@ -90,7 +90,7 @@ module.exports = {
                 {
                     employeeName: 'H. White',
                     employeeID: 'hwhite',
-                    committedHours: 20,
+                    contractedHours: 20,
                     assignedHours: 20,
                     assignedShifts: [],
                     available: true,
@@ -99,7 +99,7 @@ module.exports = {
                 {
                     employeeName: 'Unassigned',
                     employeeID: 'unassigned',
-                    committedHours: 0,
+                    contractedHours: 0,
                     assignedHours: 0,
                     assignedShifts: [],
                     available: true,

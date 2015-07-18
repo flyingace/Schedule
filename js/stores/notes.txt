@@ -18,3 +18,45 @@ if (newWeek) {
 
 //when a shift is added to the employee's assigned shifts, add it to thisWeeksShifts and re-assess their ratio
 //sort employees by ratio and assign the first employee
+
+
+
+
+
+
+Adjustments made to employee records prior to assigning shifts for a week:
+1. Total contracted hours is compared to total shift hours (available vs. needed)
+2. Each employee’s contracted hours is adjusted to accommodate the difference
+3. Exactly how this accommodation is to be made has still not been determined
+
+
+1. A copy of the array containing all employees is made
+2. For every employee record in that array
+3. At the start of the week:
+   1. Adjustments are made to employee records, as above
+   2. The ThisWeeksShifts array is emptied
+   3. The number of shifts assigned to the employee for the target week are copied (via reference) into the ThisWeeksShifts array
+   4. The hours those shifts cover are added up
+   5. And compared to the contracted hours
+   6. That ratio (shifts ratio) is (re-)set in their record
+   7. The difference between the assigned hours and contracted hours is (re-)set as available hours
+   8. The employees are then sorted by the shifts ratio (there should be a secondary value to be sorted by, i.e., hours assigned, # of shifts assigned)
+1. Whenever an employee has a shift added
+   1. Their ratio is re-calculated
+   2. Assigned Hours is re-calculated
+   3. The employees are re-sorted by ratio as described above
+
+
+1. The next unassigned shift in sequence is chosen
+2. IF the target week for that shift DOES NOT match the current target week
+   1. It is the end of the week and
+      1. Unassigned or over-assigned hours are counted against each employee’s contracted hours and that number is adjusted. (This should be done in a separate field, (adjusted contracted hours?)
+      2. A new target week is set and employees go through the “start of the week” process outlined in step 3, above.
+1. IF the target week for that shift DOES match the current target week
+   1. The employees are looped through starting from the first and checked for
+      1. existing schedule conflicts (shift on same day same day, night shifts, etc.)
+      2. available hours
+   1. IF they DO pass both of these checks
+      1. The shift is assigned to them, their record is adjusted and the employee array is re-sorted, as outlined above
+   1. IF they DO NOT pass both of these checks
+      1. The next employee(s) in the array are looped through this checking process

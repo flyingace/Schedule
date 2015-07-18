@@ -23,7 +23,7 @@ var Shift = React.createClass({
             shiftAssignee: {
                 employeeName: 'Unassigned',
                 employeeID: 'unassigned',
-                committedHours: 0,
+                contractedHours: 0,
                 assignedHours: 0,
                 assignedShifts: []
             },

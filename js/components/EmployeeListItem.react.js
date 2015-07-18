@@ -46,7 +46,7 @@ var EmployeeListItem = React.createClass({
     render: function () {
         return (
             <li className = {this.setClassesFromProps()}
-                onClick = {this.onEmployeeAssign}>{this.props.employeeName}: {this.props.committedHours}/{this.props.assignedHours}</li>
+                onClick = {this.onEmployeeAssign}>{this.props.employeeName}: {this.props.contractedHours}/{this.props.assignedHours}</li>
         );
     }
 });
