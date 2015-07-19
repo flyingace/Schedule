@@ -19,10 +19,24 @@ if (newWeek) {
 //when a shift is added to the employee's assigned shifts, add it to thisWeeksShifts and re-assess their ratio
 //sort employees by ratio and assign the first employee
 
+/*
+ By week, in order, select a shift
+ Randomly choose an employee
+ Has that employee exceeded the ACCEPTABLE LIMIT
+ Yes, assign shift
+ No, adjust array as done with weekend shifts
+ Start employee check again
 
+ When is an employee's weekly commitment adjusted?
+ At start of week?
+ How is this done?
+ Their hours assigned vs. hours contracted is checked and hours contracted for the coming week is adjusted
 
+ How is ACCEPTABLE LIMIT determined?
+ For each week need is compared to availability. The difference is used to adjust the calculation of each employee's
+ contracted hours
 
-
+ */
 
 Adjustments made to employee records prior to assigning shifts for a week:
 1. Total contracted hours is compared to total shift hours (available vs. needed)

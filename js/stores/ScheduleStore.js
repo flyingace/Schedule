@@ -56,7 +56,6 @@ function scheduleEmployees() {
     var calendar = CalendarStore.getCalendarData(),
         employees = EmployeeStore.getEmployeeData();
 
-    //debugger;
     getShiftCoverage(calendar, employees);
 }
 
@@ -73,7 +72,9 @@ function scheduleEmployees() {
  */
 function getShiftCoverage(calendar, employees) {
     var weekendShifts = [],
-        weekdayShifts = [];
+        weekdayShifts = [],
+        //make a copy of the array without the employee "Unassigned"
+        employeeArray = employees.slice(0, -1);
 
     for (var i = 0; i < calendar.length; i++) {
         var shift = calendar[i];
@@ -85,24 +86,39 @@ function getShiftCoverage(calendar, employees) {
             weekdayShifts.push(shift);
         }
     }
-    assignShifts(weekendShifts, employees, 'weekend');
-    assignShifts(weekdayShifts, employees, 'weekday');
+    assignShifts(weekendShifts, employeeArray, 'weekend');
+    assignShifts(weekdayShifts, employeeArray, 'weekday');
 
     console.log(calendar.length);
 }
 
-function assignShifts(shifts, employees, shiftType) {
+function assignShifts(shifts, employeeArray, shiftType) {
     var shiftIDs = _.pluck(shifts, 'shiftID'),
         getEmployee = (shiftType === 'weekend') ? getWeekendEmployee : getWeekdayEmployee,
-        //make a copy of the array without the employee "Unassigned"
-        employeeArray = employees.slice(0, -1),
+        targetWeek = 0,
         emp;
 
-    for (var i = 0; i < shifts.length; i++) {
-        if (_.isEmpty(shifts[i].shiftAssignee)) {
 
-            emp = getEmployee(employeeArray, shiftIDs, shiftIDs[i]);
-            CalendarActions.setSelectedShift(shiftIDs[i]);
+    //for each shift to assign
+    for (var i = 0; i < shifts.length; i++) {
+        var shift = shifts[i];
+        //if the shift is unassigned
+        if (_.isEmpty(shifts[i].shiftAssignee)) {
+            //check whether this is a new week
+            if (targetWeek !== shift.weekNumber && shiftType === 'weekday') {
+                //start new week processes
+                targetWeek = shift.weekNumber;
+                //empty [employeeRecord].thisWeeksShifts for each employee
+                //refill [employeeRecord].thisWeeksShifts for each employee
+                //set new ratio of assigned/contracted hours for each employee
+                //sort employeeArray by ratio
+                adjustEmployeeRecordsForWeek(employeeArray, targetWeek);
+            }
+
+            emp = getEmployee(employeeArray, shiftIDs, shift.shiftID);
+            setNewRatio(emp);
+            sortEmployeeArrayByRatio(employeeArray);
+            CalendarActions.setSelectedShift(shift.shiftID);
             EmployeeActions.setAssignedEmployee(emp.employeeID);
         }
     }
@@ -135,34 +151,15 @@ function getWeekendEmployee(employeeArray, shiftIDs, targetShift) {
 
 function getWeekdayEmployee(employeeArray, shifts, targetShift) {
 
-    var employeeSet = employeeArray.length;
+    var employeeInArray = 0,
+        candidate, randomEmployee;
 
-    for (var i = 0; i < employeeArray.length; i++) {
-        var employee = employeeArray[i];
-        for (var j = 0; j < employee.assignedShifts.length; j++) {
-            var idArray = employee.assignedShifts[j].split('-');
-            if (idArray[1] === targetShift.split('-')[1]) {
-                employee.thisWeeksShifts.push(employee.assignedShifts[j]);
-            }
-        }
-    }
+    while (!randomEmployee) { //TODO: This is not an aptly named variable
+        candidate = employeeArray[employeeInArray];
 
-    debugger;
-
-
-    //compare ratio
-        lowestRatio, randomIndex, candidate, assignedCount, randomEmployee, hasNoConflicts;
-
-        lowestRatio = getLowestRatio(employeeArray, shifts);
-
-    //get employee at random
-    while (!randomEmployee) {
-        randomIndex = Math.floor(Math.random() * employeeSet);
-        candidate = employeeArray[randomIndex];
-
-        //Does the candidate have any conflicts and are they out of available hours?
-        if (employeeHasConflict(candidate, targetShift) || isNotAvailable(candidate, targetShift)) {
-            adjustEmployeeArray(employeeArray, employeeSet, candidate);
+        //Does the candidate have any conflicts?
+        if (employeeHasConflict(candidate, targetShift)) {
+            employeeInArray++;
         } else {
             randomEmployee = candidate;
         }
@@ -170,24 +167,6 @@ function getWeekdayEmployee(employeeArray, shifts, targetShift) {
 
     return randomEmployee;
 }
-/*
- By week, in order, select a shift
- Randomly choose an employee
- Has that employee exceeded the ACCEPTABLE LIMIT
- Yes, assign shift
- No, adjust array as done with weekend shifts
- Start employee check again
-
- When is an employee's weekly commitment adjusted?
- At start of week?
- How is this done?
- Their hours assigned vs. hours contracted is checked and hours contracted for the coming week is adjusted
-
- How is ACCEPTABLE LIMIT determined?
- For each week need is compared to availability. The difference is used to adjust the calculation of each employee's
- contracted hours
-
- */
 
 function adjustEmployeeArray(employeeArray, employeeSet, candidate) {
     //remove the candidate from the array and then re-insert it at the end
@@ -214,30 +193,32 @@ function getLowestRatio(employeeArray, shifts) {
 function employeeHasConflict(candidate, targetShift) {
     var shiftID = targetShift,
         shifts = candidate.assignedShifts,
-        dayOfShift = shiftID.slice(0, -3),
+        dayOfShift = shiftID.split('-')[0],
         dayAfter = moment(dayOfShift, 'DDMMMMYYYY').add(1, 'days').format('DDMMMMYYYY'),
         dayBefore = moment(dayOfShift, 'DDMMMMYYYY').subtract(1, 'days').format('DDMMMMYYYY'),
         shiftsString = shifts.toString(),
+        regExpForLN = /[-\d]+(-LN)/,
         hasConflicts = false,
 
         hasShiftOnSameDay = _.contains(shiftsString, dayOfShift),
-        hasConflictingShiftOnNextDay = _.contains(shiftsString, dayAfter) && !_.contains(shiftsString, dayAfter + '_LN'),
-        hasNightShiftOnPreviousDay = _.contains(shiftsString, dayBefore + '_LN'),
-        selectedShiftIsNightShift = _.contains(shiftID, '_LN'),
+        hasConflictingShiftOnNextDay = _.contains(shiftsString, dayAfter) &&
+            !_.contains(shiftsString, dayAfter + regExpForLN),
+        hasNightShiftOnPreviousDay = _.contains(shiftsString, dayBefore + regExpForLN),
+        selectedShiftIsNightShift = _.contains(shiftID, regExpForLN),
         selectedShiftIsNotNightShift = !selectedShiftIsNightShift;
 
     //Conflict on Same Day
     //employee has another shift scheduled on the same day
     if (hasShiftOnSameDay) {
         hasConflicts = true;
-    }
+    } else
 
     //Conflict on Next Day
     //selected shift IS a Night Shift
     //and the employee has a shift scheduled on the next day that IS NOT a Night Shift
     if (selectedShiftIsNightShift && hasConflictingShiftOnNextDay) {
         hasConflicts = true;
-    }
+    } else
 
     //Conflict on Previous Day
     //selected shift IS NOT a Night Shift
@@ -266,6 +247,56 @@ function getFewestShiftsAssigned(employees, shiftIDArray) {
 function isNotAvailable(candidate, targetShift) {
     return !!Math.round(Math.random());
     //return true;
+}
+
+/**
+ * For each employee record in employeeArray, set the value of the updateThisWeeksShifts
+ * to an empty array, then call updateThisWeeksShifts to repopulate that array
+ * @param employeeArray
+ * @param targetWeek
+ */
+function adjustEmployeeRecordsForWeek(employeeArray, targetWeek) {
+    for (var i = 0; i < employeeArray.length; i++) {
+        var employee = employeeArray[i],
+            totalHours;
+        employee.thisWeeksShifts = [];
+        updateThisWeeksShifts(employee, targetWeek);
+        setNewRatio(employee);
+    }
+    sortEmployeeArrayByRatio(employeeArray);
+}
+
+function updateThisWeeksShifts(employee, targetWeek) {
+    var assignedShifts = employee.assignedShifts,
+        thisWeeksShifts = employee.thisWeeksShifts;
+
+    for (var i = 0; i < assignedShifts.length; i++) {
+        var assignedShift = assignedShifts[i],
+            shiftWeek = Number.parseInt(assignedShift.split('-')[1], 10);
+        if (targetWeek === shiftWeek) {
+            thisWeeksShifts.push(assignedShift);
+        }
+    }
+}
+
+function setNewRatio(employee) {
+    var weeksShiftsArray = (employee.hasOwnProperty('thisWeeksShifts')) ? employee.thisWeeksShifts : [],
+        contractedHoursForWeek = employee.contractedHours,
+        assignedHoursForWeek = 0;
+
+    for (var i = 0; i < weeksShiftsArray.length; i++) {
+        var shiftLength = Number.parseInt(weeksShiftsArray[i].split('-')[2], 10);
+        assignedHoursForWeek += shiftLength;
+    }
+
+    employee.shiftRatio = assignedHoursForWeek / contractedHoursForWeek;
+}
+
+function sortEmployeeArrayByRatio(employeeArray) {
+    employeeArray.sort(function(a, b) {
+        return a.shiftRatio - b.shiftRatio;
+    });
+    //console.log(employeeArray);
 }
 
 
