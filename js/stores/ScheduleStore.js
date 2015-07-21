@@ -109,16 +109,13 @@ function assignShifts(shifts, employeeArray, shiftType) {
                 //start new week processes
                 targetWeek = shift.weekNumber;
                 console.log(targetWeek);
-                //empty [employeeRecord].thisWeeksShifts for each employee
-                //refill [employeeRecord].thisWeeksShifts for each employee
-                //set new ratio of assigned/contracted hours for each employee
-                //sort employeeArray by ratio
                 adjustEmployeeRecordsForWeek(employeeArray, targetWeek);
             }
 
             emp = getEmployee(employeeArray, shiftIDs, shift.shiftID);
             CalendarActions.setSelectedShift(shift.shiftID);
             EmployeeActions.setAssignedEmployee(emp.employeeID);
+
             if (shiftType === 'weekday') {
                 updateThisWeeksShifts(emp, targetWeek);
                 setNewRatio(emp);
@@ -245,7 +242,8 @@ function isNotAvailable(candidate, targetShift) {
 
 /**
  * For each employee record in employeeArray, set the value of the updateThisWeeksShifts
- * to an empty array, then call updateThisWeeksShifts to repopulate that array
+ * to an empty array, then call updateThisWeeksShifts to repopulate that array,
+ * then sort the employeeArray by each employee's assigned/contracted ratio
  * @param employeeArray
  * @param targetWeek
  */
