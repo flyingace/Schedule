@@ -34,7 +34,7 @@ var ScheduleApp = React.createClass({
         EmployeeStore.addChangeListener(this._onChange);
         CalendarStore.addChangeListener(this._onChange);
         ScheduleStore.addChangeListener(this._onChange);
-        this.populateWeekends();
+        this.activateButton();
     },
 
     // Remove change listers from stores
@@ -44,8 +44,13 @@ var ScheduleApp = React.createClass({
         ScheduleStore.removeChangeListener(this._onChange);
     },
 
-    populateWeekends: function () {
-        setTimeout(ScheduleStore.getCoverage, 5000);
+    activateButton: function () {
+        var assign = document.getElementById('assign-shifts');
+        assign.onclick = function () {
+            console.time('coverage_assignment');
+            ScheduleStore.getCoverage();
+            console.timeEnd('coverage_assignment');
+        };
     },
 
     // Render our child components, passing state via props
