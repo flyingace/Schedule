@@ -108,6 +108,7 @@ function assignShifts(shifts, employeeArray, shiftType) {
             if (targetWeek !== shift.weekNumber && shiftType === 'weekday') {
                 //start new week processes
                 targetWeek = shift.weekNumber;
+                console.log(targetWeek);
                 //empty [employeeRecord].thisWeeksShifts for each employee
                 //refill [employeeRecord].thisWeeksShifts for each employee
                 //set new ratio of assigned/contracted hours for each employee
@@ -116,10 +117,13 @@ function assignShifts(shifts, employeeArray, shiftType) {
             }
 
             emp = getEmployee(employeeArray, shiftIDs, shift.shiftID);
-            setNewRatio(emp);
-            sortEmployeeArrayByRatio(employeeArray);
             CalendarActions.setSelectedShift(shift.shiftID);
             EmployeeActions.setAssignedEmployee(emp.employeeID);
+            if (shiftType === 'weekday') {
+                updateThisWeeksShifts(emp, targetWeek);
+                setNewRatio(emp);
+                sortEmployeeArrayByRatio(employeeArray);
+            }
         }
     }
 }
@@ -178,16 +182,6 @@ function adjustEmployeeArray(employeeArray, employeeSet, candidate) {
     if (employeeSet < 0) {
         alert("This thing aint workin'");
     }
-}
-
-function getLowestRatio(employeeArray, shifts) {
-    /*
-     Find all shifts for this week
-     How many of hours of these shifts has each employee taken
-     How does that compare to the number of hours they were contracted for?
-     What is the lowest ratio of hours assigned/hours contracted?
-     */
-
 }
 
 function employeeHasConflict(candidate, targetShift) {
