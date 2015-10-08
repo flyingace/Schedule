@@ -2,7 +2,9 @@
 
 /*globals */
 
-var React = require('react');
+var React = require('react'),
+    DatePicker = require('react-datepicker'),
+    moment = require('../utils/moment');
 
 var CalendarMaker = React.createClass({
 
@@ -25,14 +27,13 @@ var CalendarMaker = React.createClass({
 
     render: function () {
         return (
-            <div className = "class-name"></div>
+            <div className = "date-picker">
+                <DatePicker
+                    selected = {moment()}
+                    onChange = {this.handleChange}/>
+            </div>
         );
     }
 });
 
 module.exports = CalendarMaker;
-
-React.render(
-    <CalendarMaker />,
-    document.getElementById('parent-id')
-);

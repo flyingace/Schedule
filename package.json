@@ -5,10 +5,11 @@
   "main": "js/app.js",
   "dependencies": {
     "flux": "^2.0.0",
-    "react": "^0.13.3",
-    "lodash": "^3.9.0",
     "jquery": "2.1.4",
-    "moment": "2.10.3"
+    "lodash": "^3.9.0",
+    "moment": "2.10.3",
+    "react": "^0.13.3",
+    "react-datepicker": "^0.13.0"
   },
   "devDependencies": {
     "browserify": "~10.2.4",

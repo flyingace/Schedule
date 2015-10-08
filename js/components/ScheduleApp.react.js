@@ -7,6 +7,7 @@ var CalendarStore = require('../stores/CalendarStore');
 var EmployeeStore = require('../stores/EmployeeStore');
 var ScheduleStore = require('../stores/ScheduleStore');
 var Calendar = require('./Calendar.react');
+var CalendarMaker = require('./CalendarMaker.react');
 var EmployeeList = require('./EmployeeList.react');
 var Schedule = require('../utils/Schedule');
 
@@ -57,6 +58,7 @@ var ScheduleApp = React.createClass({
     render: function () {
         return (
             <div className = "schedule-app">
+                <CalendarMaker />
                 <Calendar calendarData = {this.state.calendarData}/>
                 <EmployeeList employeeData = {this.state.employeeData} empListStatus = {this.state.employeeListStatus} />
             </div>
