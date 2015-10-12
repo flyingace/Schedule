@@ -32,50 +32,52 @@ function _unsetSelectedEmployee() {
     _selectedEmployee = {};
 }
 
-function setEmployeeAvailability(selectedShiftID) {
-    for (var i = 0; i < _employeeData.length; i++) {
-
-        var shiftsAssigned = _employeeData[i].assignedShifts,
-            isAvailable = checkScheduleConflict(selectedShiftID, shiftsAssigned);
-
-        _employeeData[i].available = isAvailable;
-    }
-}
-
 function checkScheduleConflict(shiftID, shifts) {
-    var dayOfShift = shiftID.slice(0, -3),
+    var dayOfShift = shiftID.slice(0, (shiftID.indexOf('-'))),
         dayAfter = moment(dayOfShift, 'DDMMMMYYYY').add(1, 'days').format('DDMMMMYYYY'),
         dayBefore = moment(dayOfShift, 'DDMMMMYYYY').subtract(1, 'days').format('DDMMMMYYYY'),
-        shiftsString = shifts.toString(),
+        dayBeforeRegex = new RegExp('(' + dayBefore + ')[-\\d]+(-LN)'),
+        dayAfterRegex = new RegExp('(' + dayAfter + ')[-\\d]+(-LN)'),
+        shiftsArrayString = shifts.toString(),
         isAvailable = true,
 
-        hasShiftOnSameDay = _.contains(shiftsString, dayOfShift),
-        hasConflictingShiftOnNextDay = _.contains(shiftsString, dayAfter) && !_.contains(shiftsString, dayAfter + '_LN'),
-        hasNightShiftOnPreviousDay = _.contains(shiftsString, dayBefore + '_LN'),
-        selectedShiftIsNightShift = _.contains(shiftID, '_LN'),
-        selectedShiftIsNotNightShift = !selectedShiftIsNightShift;
+        hasShiftOnSameDay = shiftsArrayString.match(dayOfShift),
+        hasShiftOnNextDay = shiftsArrayString.match(dayAfter) &&
+            dayAfterRegex.exec(shiftsArrayString) === null,
+        hasNightShiftOnPreviousDay = dayBeforeRegex.exec(shiftsArrayString),
+        selectedShiftIsNightShift = _.includes(shiftID, '-LN');
 
     //Conflict on Same Day
     //employee has another shift scheduled on the same day
     if (hasShiftOnSameDay) {
-        isAvailable = false;
+        return false;
     }
 
     //Conflict on Next Day
     //selected shift IS a Night Shift
     //and the employee has a shift scheduled on the next day that IS NOT a Night Shift
-    if (selectedShiftIsNightShift && hasConflictingShiftOnNextDay) {
-        isAvailable = false;
+    if (selectedShiftIsNightShift && hasShiftOnNextDay) {
+        return false;
     }
 
     //Conflict on Previous Day
     //selected shift IS NOT a Night Shift
     //and the employee has a shift scheduled on the previous day that IS a Night Shift
-    if (selectedShiftIsNotNightShift && hasNightShiftOnPreviousDay) {
-        isAvailable = false;
+    if (!selectedShiftIsNightShift && hasNightShiftOnPreviousDay) {
+        return false;
     }
 
     return isAvailable;
+}
+
+function setEmployeeAvailability(selectedShiftID) {
+    for (var i = 0; i < _employeeData.length; i++) {
+
+        var shiftsAssigned = _employeeData[i].assignedShifts,
+            isAvailable = (_employeeData[i].employeeID === 'unassigned') ? true : checkScheduleConflict(selectedShiftID, shiftsAssigned);
+
+        _employeeData[i].available = isAvailable;
+    }
 }
 
 function _assignShiftToEmployee(shift) {
@@ -146,7 +148,7 @@ ScheduleDispatcher.register(function (payload) {
 
             // Respond to SHIFT_UNASSIGN action
             case ScheduleConstants.SHIFT_UNASSIGN:
-                unassignShiftToEmployee(action.data);
+                _unassignShiftToEmployee(action.data);
                 break;
 
             case ScheduleConstants.UPDATE_EMPLOYEE_AVAILABILITY:
