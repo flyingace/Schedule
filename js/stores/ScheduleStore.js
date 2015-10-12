@@ -187,35 +187,35 @@ function employeeHasConflict(candidate, targetShift) {
         dayOfShift = shiftID.split('-')[0],
         dayAfter = moment(dayOfShift, 'DDMMMMYYYY').add(1, 'days').format('DDMMMMYYYY'),
         dayBefore = moment(dayOfShift, 'DDMMMMYYYY').subtract(1, 'days').format('DDMMMMYYYY'),
-        shiftsString = shifts.toString(),
-        regExpForLN = /[-\d]+(-LN)/,
+        dayBeforeRegex = new RegExp('(' + dayBefore + ')[-\\d]+(-LN)'),
+        dayAfterRegex = new RegExp('(' + dayAfter + ')[-\\d]+(-LN)'),
+        shiftsArrayString = shifts.toString(),
         hasConflicts = false,
 
-        hasShiftOnSameDay = _.contains(shiftsString, dayOfShift),
-        hasConflictingShiftOnNextDay = _.contains(shiftsString, dayAfter) &&
-            !_.contains(shiftsString, dayAfter + regExpForLN),
-        hasNightShiftOnPreviousDay = _.contains(shiftsString, dayBefore + regExpForLN),
-        selectedShiftIsNightShift = _.contains(shiftID, regExpForLN),
-        selectedShiftIsNotNightShift = !selectedShiftIsNightShift;
+        hasShiftOnSameDay = shiftsArrayString.match(dayOfShift),
+        hasShiftOnNextDay = shiftsArrayString.match(dayAfter) &&
+            dayAfterRegex.exec(shiftsArrayString) === null,
+        hasNightShiftOnPreviousDay = dayBeforeRegex.exec(shiftsArrayString),
+        selectedShiftIsNightShift = _.includes(shiftID, '-LN');
 
     //Conflict on Same Day
     //employee has another shift scheduled on the same day
     if (hasShiftOnSameDay) {
-        hasConflicts = true;
-    } else
+        return true;
+    }
 
     //Conflict on Next Day
     //selected shift IS a Night Shift
     //and the employee has a shift scheduled on the next day that IS NOT a Night Shift
-    if (selectedShiftIsNightShift && hasConflictingShiftOnNextDay) {
-        hasConflicts = true;
-    } else
+    if (selectedShiftIsNightShift && hasShiftOnNextDay) {
+        return true;
+    }
 
     //Conflict on Previous Day
     //selected shift IS NOT a Night Shift
     //and the employee has a shift scheduled on the previous day that IS a Night Shift
-    if (selectedShiftIsNotNightShift && hasNightShiftOnPreviousDay) {
-        hasConflicts = true;
+    if (!selectedShiftIsNightShift && hasNightShiftOnPreviousDay) {
+        return true;
     }
 
     return hasConflicts;
