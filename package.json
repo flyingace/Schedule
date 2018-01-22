@@ -7,8 +7,8 @@
     "flux": "^2.0.0",
     "react": "^0.13.3",
     "lodash": "^3.9.0",
-    "jquery": "2.1.4",
-    "moment": "2.10.3"
+    "jquery": "^3.0.0",
+    "moment": "^2.11.2"
   },
   "devDependencies": {
     "browserify": "~10.2.4",
